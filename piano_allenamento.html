@@ -1,0 +1,1236 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Piano Allenamento — Gara 10km 26 Aprile 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
+<style>
+/* ── RESET & BASE ── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg:       #0f0f0d;
+  --bg2:      #161613;
+  --bg3:      #1e1e1a;
+  --bg4:      #252520;
+  --line:     #2e2e28;
+  --line2:    #3a3a33;
+  --txt:      #e8e6dc;
+  --txt2:     #9a9888;
+  --txt3:     #5a5a50;
+  --accent:   #c8f060;
+  --accent2:  #8bbd2a;
+  --run:      #60c8a0;
+  --run-bg:   #0d2b1e;
+  --forza:    #9b82f5;
+  --forza-bg: #1a1530;
+  --climb:    #f5a860;
+  --climb-bg: #2b1a08;
+  --mob:      #60c4d8;
+  --mob-bg:   #082028;
+  --opt:      #888070;
+  --opt-bg:   #1e1e1a;
+  --gara:     #f5e060;
+  --gara-bg:  #2b2608;
+  --done-bg:  #1a1e12;
+  --done:     #5a7030;
+  --mono:     'DM Mono', monospace;
+  --sans:     'DM Sans', sans-serif;
+  --radius:   8px;
+  --radius-lg:14px;
+}
+
+html { font-size: 15px; }
+body {
+  font-family: var(--sans);
+  background: var(--bg);
+  color: var(--txt);
+  min-height: 100vh;
+  line-height: 1.6;
+}
+
+a { color: inherit; text-decoration: none; }
+
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: var(--bg2); }
+::-webkit-scrollbar-thumb { background: var(--line2); border-radius: 3px; }
+
+/* ── LAYOUT ── */
+.shell {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+/* ── HEADER ── */
+header {
+  border-bottom: 1px solid var(--line);
+  padding: 28px 0 22px;
+  margin-bottom: 32px;
+}
+.header-inner {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.header-title {
+  font-family: var(--mono);
+  font-size: 1.05rem;
+  font-weight: 400;
+  color: var(--txt2);
+  letter-spacing: .04em;
+  margin-bottom: 4px;
+}
+h1 {
+  font-size: 2rem;
+  font-weight: 300;
+  letter-spacing: -.02em;
+  color: var(--txt);
+  line-height: 1.1;
+}
+h1 em {
+  color: var(--accent);
+  font-style: normal;
+}
+.header-meta {
+  font-family: var(--mono);
+  font-size: .75rem;
+  color: var(--txt3);
+  text-align: right;
+  line-height: 1.8;
+}
+
+/* ── NAV TABS (sezioni principali) ── */
+.main-nav {
+  display: flex;
+  gap: 2px;
+  margin-bottom: 28px;
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 0;
+}
+.main-nav button {
+  font-family: var(--mono);
+  font-size: .78rem;
+  font-weight: 400;
+  letter-spacing: .05em;
+  color: var(--txt3);
+  background: none;
+  border: none;
+  padding: 10px 18px;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  transition: color .15s, border-color .15s;
+  text-transform: uppercase;
+}
+.main-nav button:hover { color: var(--txt2); }
+.main-nav button.active {
+  color: var(--accent);
+  border-bottom-color: var(--accent);
+}
+
+/* ── SECTION ── */
+.section { display: none; }
+.section.active { display: block; }
+
+/* ── PROGRESS BAR ── */
+.prog-wrap {
+  background: var(--bg2);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  padding: 16px 20px;
+  margin-bottom: 24px;
+}
+.prog-label {
+  font-family: var(--mono);
+  font-size: .72rem;
+  color: var(--txt3);
+  letter-spacing: .05em;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+}
+.prog-rows { display: flex; flex-direction: column; gap: 6px; }
+.prog-row { display: flex; align-items: center; gap: 8px; }
+.prog-row-lbl {
+  font-family: var(--mono);
+  font-size: .72rem;
+  color: var(--txt3);
+  width: 36px;
+  flex-shrink: 0;
+}
+.prog-segs { display: flex; gap: 3px; flex: 1; }
+.prog-seg {
+  height: 8px;
+  flex: 1;
+  border-radius: 3px;
+  background: var(--line);
+  transition: background .3s;
+}
+.seg-done  { background: var(--done); }
+.seg-mont  { background: #3a6060; }
+.seg-curr  { background: #8a6020; }
+.seg-s1    { background: #1a5a40; }
+.seg-s2    { background: #2a3a6a; }
+.seg-s3    { background: #1a4a5a; }
+.seg-gara  { background: #6a4010; }
+.seg-empty { background: transparent !important; }
+
+/* ── WEEK TABS ── */
+.week-tabs {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+.week-tab {
+  font-family: var(--mono);
+  font-size: .72rem;
+  letter-spacing: .04em;
+  color: var(--txt3);
+  background: var(--bg2);
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  padding: 5px 13px;
+  cursor: pointer;
+  transition: all .15s;
+}
+.week-tab:hover { color: var(--txt2); border-color: var(--line2); }
+.week-tab.active {
+  background: var(--accent);
+  color: var(--bg);
+  border-color: var(--accent);
+  font-weight: 500;
+}
+
+/* ── WEEK NOTE ── */
+.week-note {
+  font-size: .82rem;
+  color: var(--txt2);
+  padding: 8px 12px;
+  background: var(--bg3);
+  border-radius: var(--radius);
+  border-left: 2px solid var(--line2);
+  margin-bottom: 14px;
+  line-height: 1.5;
+}
+
+/* ── CALENDAR GRID ── */
+.cal-grid {
+  display: grid;
+  gap: 5px;
+  margin-bottom: 12px;
+}
+.cal-grid.cols-7 { grid-template-columns: repeat(7, 1fr); }
+.cal-grid.cols-8 { grid-template-columns: repeat(8, 1fr); }
+.cal-grid.cols-6 { grid-template-columns: repeat(6, 1fr); }
+
+.cal-day {
+  background: var(--bg2);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 8px 7px 10px;
+  min-height: 110px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  transition: border-color .15s;
+}
+.cal-day.rest {
+  background: transparent;
+  border-style: dashed;
+  border-color: var(--line);
+  opacity: .4;
+}
+.cal-day.today {
+  border-color: var(--accent);
+  border-width: 1.5px;
+}
+.cal-day.alt {
+  border-style: dashed;
+  border-color: var(--line2);
+  background: var(--bg);
+}
+.cal-day.done-day {
+  background: var(--done-bg);
+  border-color: var(--line);
+  opacity: .7;
+}
+.day-date {
+  font-family: var(--mono);
+  font-size: .68rem;
+  color: var(--txt3);
+  letter-spacing: .03em;
+  margin-bottom: 2px;
+}
+.rest-label {
+  font-family: var(--mono);
+  font-size: .68rem;
+  color: var(--txt3);
+}
+
+/* ── BADGES ── */
+.badge {
+  border-radius: 5px;
+  padding: 3px 6px;
+  font-size: .72rem;
+  font-weight: 500;
+  line-height: 1.35;
+  cursor: pointer;
+  transition: opacity .15s, transform .1s;
+  display: block;
+}
+.badge:hover { opacity: .8; transform: translateY(-1px); }
+.badge.b-run   { background: var(--run-bg);   color: var(--run);   border: 1px solid #0f3d2a; }
+.badge.b-forza { background: var(--forza-bg); color: var(--forza); border: 1px solid #2a2248; }
+.badge.b-climb { background: var(--climb-bg); color: var(--climb); border: 1px solid #3d2810; }
+.badge.b-mob   { background: var(--mob-bg);   color: var(--mob);   border: 1px solid #0f303a; }
+.badge.b-gara  { background: var(--gara-bg);  color: var(--gara);  border: 1px solid #3d3510; font-weight: 500; }
+.badge.b-opt   { background: var(--opt-bg);   color: var(--opt);   border: 1px solid var(--line); font-style: italic; }
+.badge.b-done  { background: var(--done-bg);  color: var(--done);  border: 1px solid #2a3a18; text-decoration: line-through; opacity: .6; cursor: default; }
+
+/* ── DETAIL PANEL ── */
+.detail-panel {
+  background: var(--bg3);
+  border: 1px solid var(--line2);
+  border-radius: var(--radius-lg);
+  padding: 14px 18px;
+  min-height: 60px;
+  font-size: .85rem;
+  color: var(--txt2);
+  line-height: 1.7;
+  margin-bottom: 20px;
+}
+.detail-panel strong { color: var(--txt); font-weight: 500; }
+.detail-panel .detail-title {
+  font-family: var(--mono);
+  font-size: .78rem;
+  color: var(--accent);
+  letter-spacing: .04em;
+  margin-bottom: 6px;
+}
+.detail-empty {
+  font-family: var(--mono);
+  font-size: .75rem;
+  color: var(--txt3);
+  font-style: italic;
+}
+.vol-tag {
+  display: inline-block;
+  background: #2b1a08;
+  color: var(--climb);
+  border: 1px solid #3d2810;
+  border-radius: 4px;
+  padding: 1px 6px;
+  font-size: .7rem;
+  font-family: var(--mono);
+  margin-left: 6px;
+  vertical-align: middle;
+}
+.vol-tag.up { background: #1a2208; color: var(--accent); border-color: #2e3d10; }
+
+/* ── LEGEND ── */
+.legend {
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+  padding: 10px 0 20px;
+  border-top: 1px solid var(--line);
+  margin-top: 8px;
+}
+.leg-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: .75rem;
+  color: var(--txt3);
+}
+.leg-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 3px;
+  flex-shrink: 0;
+}
+
+/* ── ESERCIZI ── */
+.ex-cat-tabs {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+.ex-cat-tab {
+  font-family: var(--mono);
+  font-size: .72rem;
+  letter-spacing: .04em;
+  color: var(--txt3);
+  background: var(--bg2);
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  padding: 5px 13px;
+  cursor: pointer;
+  transition: all .15s;
+  text-transform: uppercase;
+}
+.ex-cat-tab:hover { color: var(--txt2); }
+.ex-cat-tab.active {
+  background: var(--bg4);
+  color: var(--txt);
+  border-color: var(--line2);
+}
+.ex-section-label {
+  font-family: var(--mono);
+  font-size: .7rem;
+  color: var(--txt3);
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  margin: 18px 0 10px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--line);
+}
+.ex-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 8px;
+}
+.ex-card {
+  background: var(--bg2);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  transition: border-color .15s;
+}
+.ex-card:hover { border-color: var(--line2); }
+.ex-card-title {
+  font-size: .88rem;
+  font-weight: 500;
+  color: var(--txt);
+}
+.ex-card-muscle {
+  font-family: var(--mono);
+  font-size: .7rem;
+  color: var(--txt3);
+}
+.ex-card-tip {
+  font-size: .78rem;
+  color: var(--txt2);
+  line-height: 1.55;
+  padding-left: 8px;
+  border-left: 2px solid var(--line2);
+}
+.yt-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 4px;
+  padding: 5px 10px;
+  border-radius: 6px;
+  background: #200e00;
+  color: #f0a040;
+  border: 1px solid #3d2010;
+  font-size: .75rem;
+  font-weight: 500;
+  font-family: var(--mono);
+  cursor: pointer;
+  text-decoration: none;
+  transition: opacity .15s;
+  width: fit-content;
+}
+.yt-btn:hover { opacity: .75; }
+.yt-icon { width: 14px; height: 14px; fill: currentColor; flex-shrink: 0; }
+
+/* ── STORICO ── */
+.storico-info {
+  font-size: .82rem;
+  color: var(--txt2);
+  background: var(--bg3);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 14px 18px;
+  line-height: 1.7;
+  margin-bottom: 20px;
+}
+.storico-info code {
+  font-family: var(--mono);
+  font-size: .75rem;
+  background: var(--bg4);
+  color: var(--accent);
+  padding: 1px 5px;
+  border-radius: 3px;
+}
+.storico-plan-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.storico-plan-item {
+  background: var(--bg2);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.storico-plan-name {
+  font-family: var(--mono);
+  font-size: .82rem;
+  color: var(--txt);
+}
+.storico-plan-meta {
+  font-size: .75rem;
+  color: var(--txt3);
+}
+.storico-badge {
+  font-family: var(--mono);
+  font-size: .68rem;
+  padding: 2px 8px;
+  border-radius: 10px;
+  border: 1px solid var(--line2);
+  color: var(--txt3);
+}
+.storico-badge.current {
+  background: var(--accent);
+  color: var(--bg);
+  border-color: var(--accent);
+  font-weight: 500;
+}
+
+/* ── HOW TO ADD ── */
+.howto {
+  margin-top: 24px;
+  background: var(--bg2);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  padding: 18px 22px;
+}
+.howto h3 {
+  font-family: var(--mono);
+  font-size: .78rem;
+  color: var(--accent);
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+}
+.howto ol {
+  padding-left: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.howto li {
+  font-size: .82rem;
+  color: var(--txt2);
+  line-height: 1.6;
+}
+.howto code {
+  font-family: var(--mono);
+  font-size: .75rem;
+  background: var(--bg4);
+  color: var(--accent);
+  padding: 1px 5px;
+  border-radius: 3px;
+}
+
+/* ── RESPONSIVE ── */
+@media (max-width: 700px) {
+  h1 { font-size: 1.4rem; }
+  .cal-grid.cols-7,
+  .cal-grid.cols-8 { grid-template-columns: repeat(4, 1fr); }
+  .cal-grid.cols-6 { grid-template-columns: repeat(3, 1fr); }
+  .cal-day { min-height: 90px; }
+  .main-nav button { padding: 8px 10px; font-size: .7rem; }
+}
+@media (max-width: 480px) {
+  .cal-grid.cols-7,
+  .cal-grid.cols-8 { grid-template-columns: repeat(2, 1fr); }
+}
+</style>
+</head>
+<body>
+<div class="shell">
+
+  <header>
+    <div class="header-inner">
+      <div>
+        <div class="header-title">// piano_allenamento.html</div>
+        <h1>Corsa · Forza · <em>Montagna</em></h1>
+      </div>
+      <div class="header-meta">
+        <div>Gara 10 km</div>
+        <div>26 Aprile 2026</div>
+        <div id="days-to-go"></div>
+      </div>
+    </div>
+  </header>
+
+  <nav class="main-nav">
+    <button class="active" onclick="showSection('calendario')">Calendario</button>
+    <button onclick="showSection('esercizi')">Esercizi &amp; Video</button>
+    <button onclick="showSection('storico')">Storico piani</button>
+  </nav>
+
+  <!-- ══════════════════════════════════════════
+       SEZIONE CALENDARIO
+  ══════════════════════════════════════════ -->
+  <div id="section-calendario" class="section active">
+
+    <!-- Barra progressione corsa -->
+    <div class="prog-wrap">
+      <div class="prog-label">Progressione sessioni corsa → 26 apr 2026</div>
+      <div class="prog-rows">
+        <div class="prog-row">
+          <div class="prog-row-lbl">Lv 6</div>
+          <div class="prog-segs">
+            <div class="prog-seg seg-done"  title="Lv6 #1 — fatto"></div>
+            <div class="prog-seg seg-mont"  title="Montagna dom 22/3 — carico equivalente"></div>
+            <div class="prog-seg seg-curr"  title="Lv6 #2 — mer 25 mar"></div>
+            <div class="prog-seg seg-curr"  title="Lv6 #3 — dom 29 o lun 30 mar"></div>
+            <div class="prog-seg seg-empty" style="flex:7"></div>
+          </div>
+        </div>
+        <div class="prog-row">
+          <div class="prog-row-lbl">Lv 7</div>
+          <div class="prog-segs">
+            <div class="prog-seg seg-empty" style="flex:4"></div>
+            <div class="prog-seg seg-s1" title="Lv7 #1 — mar 31 mar"></div>
+            <div class="prog-seg seg-s1" title="Lv7 #2 — ven 3 apr"></div>
+            <div class="prog-seg seg-s1" title="Lv7 #3 — dom 5 apr (o lun 6)"></div>
+            <div class="prog-seg seg-empty" style="flex:4"></div>
+          </div>
+        </div>
+        <div class="prog-row">
+          <div class="prog-row-lbl">Lv 8</div>
+          <div class="prog-segs">
+            <div class="prog-seg seg-empty" style="flex:7"></div>
+            <div class="prog-seg seg-s2" title="Lv8 #1 — mar 8 apr"></div>
+            <div class="prog-seg seg-s2" title="Lv8 #2 — gio 10 apr"></div>
+            <div class="prog-seg seg-empty" style="flex:2"></div>
+          </div>
+        </div>
+        <div class="prog-row">
+          <div class="prog-row-lbl">Lv 9</div>
+          <div class="prog-segs">
+            <div class="prog-seg seg-empty" style="flex:9"></div>
+            <div class="prog-seg seg-s3" title="Lv9 #1 — lun 14 apr"></div>
+            <div class="prog-seg seg-s3" title="Lv9 #2 — gio 17 apr"></div>
+            <div class="prog-seg seg-empty" style="flex:1"></div>
+          </div>
+        </div>
+        <div class="prog-row">
+          <div class="prog-row-lbl">Gara</div>
+          <div class="prog-segs">
+            <div class="prog-seg seg-empty" style="flex:11"></div>
+            <div class="prog-seg seg-gara" title="GARA — dom 26 apr"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Week tabs -->
+    <div class="week-tabs" id="week-tabs"></div>
+    <div class="week-note" id="week-note"></div>
+    <div class="cal-grid" id="cal-grid"></div>
+
+    <!-- Detail panel -->
+    <div class="detail-panel" id="detail-panel">
+      <div class="detail-empty">— clicca su un allenamento per i dettagli —</div>
+    </div>
+
+    <!-- Legend -->
+    <div class="legend">
+      <div class="leg-item"><div class="leg-dot" style="background:var(--run-bg);border:1px solid #0f3d2a"></div>Corsa</div>
+      <div class="leg-item"><div class="leg-dot" style="background:var(--forza-bg);border:1px solid #2a2248"></div>Forza gambe</div>
+      <div class="leg-item"><div class="leg-dot" style="background:var(--climb-bg);border:1px solid #3d2810"></div>Arrampicata</div>
+      <div class="leg-item"><div class="leg-dot" style="background:var(--mob-bg);border:1px solid #0f303a"></div>Mobilità/recupero</div>
+      <div class="leg-item"><div class="leg-dot" style="background:var(--opt-bg);border:1px solid var(--line)"></div>Opzionale / alternativa</div>
+    </div>
+
+  </div><!-- /calendario -->
+
+
+  <!-- ══════════════════════════════════════════
+       SEZIONE ESERCIZI
+  ══════════════════════════════════════════ -->
+  <div id="section-esercizi" class="section">
+    <div class="ex-cat-tabs" id="ex-cat-tabs"></div>
+    <div id="ex-content"></div>
+  </div>
+
+
+  <!-- ══════════════════════════════════════════
+       SEZIONE STORICO
+  ══════════════════════════════════════════ -->
+  <div id="section-storico" class="section">
+    <div class="storico-info">
+      Qui trovi tutti i piani mensili. Per aggiungere un nuovo piano, aggiungi un oggetto nell'array <code>PIANI</code>
+      in fondo allo script, e aggiungi le settimane nell'array <code>WEEKS</code> con la chiave <code>piano</code>
+      corrispondente. I dettagli degli allenamenti vanno nell'oggetto <code>DETAILS</code>.
+    </div>
+    <div class="storico-plan-list" id="storico-list"></div>
+    <div class="howto">
+      <h3>Come aggiornare il piano</h3>
+      <ol>
+        <li>Apri il file HTML in un editor di testo (es. VS Code, Notepad++).</li>
+        <li>Trova l'array <code>PIANI</code> nello script. Aggiungi un nuovo oggetto con <code>id</code>, <code>label</code>, <code>meta</code>, <code>gara</code>.</li>
+        <li>Trova l'array <code>WEEKS</code>. Aggiungi le nuove settimane con <code>piano: 'id_del_tuo_piano'</code>.</li>
+        <li>Aggiungi i dettagli di ogni allenamento nell'oggetto <code>DETAILS</code> con chiavi univoche.</li>
+        <li>Per marcare un allenamento come completato, aggiungi <code>done: true</code> al badge nella settimana.</li>
+        <li>Salva il file e riaprilo nel browser. Nessun server necessario.</li>
+      </ol>
+    </div>
+  </div>
+
+</div><!-- /shell -->
+
+<script>
+/* ══════════════════════════════════════════════════════════
+   DATI — modifica qui per aggiornare il piano
+══════════════════════════════════════════════════════════ */
+
+/* ── PIANI (storico) ── */
+const PIANI = [
+  {
+    id: 'apr2026',
+    label: 'Piano Aprile 2026',
+    meta: '23 mar → 26 apr 2026',
+    gara: '10 km — 26 Aprile 2026',
+    current: true,
+  },
+  /* ESEMPIO per piano successivo:
+  {
+    id: 'giu2026',
+    label: 'Piano Giugno 2026',
+    meta: '1 mag → 30 giu 2026',
+    gara: 'Obiettivo: Escursione Monte Rosa',
+    current: false,
+  },
+  */
+];
+
+/* ── DETTAGLI ALLENAMENTI ── */
+/* Chiave univoca → { title, body }
+   Nel body puoi usare HTML. Tag speciali:
+   <span class="vol-tag up">+10% carico</span>  → etichetta volume
+   <span class="vol-tag">= carico sett. prec.</span> → carico invariato
+*/
+const DETAILS = {
+
+  /* ── MONTAGNA ── */
+  mont1: {
+    title: 'Montagna — uscita media · dom 22 mar (già fatto)',
+    body: '<strong>Già eseguita.</strong> Uscita media 4-5h, 800-1200m D+. Equivale a una corsa lunga potenziata con forte componente eccentrica (discesa). Oggi lunedì: mobilità obbligatoria, niente corsa.',
+  },
+
+  /* ── MOBILITÀ ── */
+  mob0: {
+    title: 'Mobilità/recupero · lun 23 mar',
+    body: '<strong>~20 min — priorità oggi.</strong> World lunge · 90/90 stretch · Downward dog con pompate polpacci · Foam roller quadricipiti e polpacci. Le gambe hanno la discesa di ieri: niente corsa.',
+  },
+  mob2: {
+    title: 'Mobilità · mer 1 apr',
+    body: '<strong>~25 min.</strong> Single-leg deadlift leggerissimo (propriocezione caviglia) · 90/90 · World lunge · Piriforme. Recupero attivo dopo il salto al Lv 7.',
+  },
+  mob3: {
+    title: 'Mobilità · mar 8 apr (priorità alta)',
+    body: '<strong>~25 min · non saltare.</strong> Settimana di picco. Foam roller gambe complete · 5 min respirazione diaframmatica sdraiato (metodo RV) · Ileopsoas stretch se hai tensioni.',
+  },
+  mob4: {
+    title: 'Mobilità · mar 15 apr',
+    body: '<strong>~25 min.</strong> Come sett. 3. Il Lv 9 stanca le gambe: foam roller, 90/90, respirazione diaframmatica. Non saltare.',
+  },
+  mob5: {
+    title: 'Mobilità pre-gara · ven 25 apr',
+    body: '<strong>~20 min · solo dinamica.</strong> Leg swing avanti/dietro e laterali · Intrarotazioni anca · Mobilità caviglia a muro · A-skip leggero. Niente stretching statico prolungato: abbassa il tono muscolare. Dormi bene.',
+  },
+
+  /* ── CORSA ── */
+  r6b: {
+    title: 'Corsa — Livello 6 (2ª sessione) · mer 25 mar',
+    body: '<strong>3\' camminando + 15\' corsa × 3</strong> (~57 min totali). Ritmo conservativo: devi poter parlare per tutta la durata. Respirazione nasale finché regge. Dopo: valuta 1 (facile) / 2 (gestibile) / 3 (dura). Due "1-2" consecutivi → sali al Lv 7.',
+  },
+  r6c_dom: {
+    title: 'Corsa Lv 6 (3ª) · dom 29 mar — opzionale',
+    body: '<strong>3\' camminando + 15\' corsa × 3.</strong> Opzionale: se le gambe sono pesanti, sposta a lunedì 30. Non perdi nulla. Se ti senti bene, falla domenica e lunedì 30 diventa riposo.',
+  },
+  r6c_lun: {
+    title: 'Corsa Lv 6 (3ª) · lun 30 mar — alternativa se dom 29 era riposo',
+    body: '<strong>3\' camminando + 15\' corsa × 3.</strong> Alternativa a domenica 29. Dopo questa sessione, da martedì 31 si sale al Lv 7. Valutazione 1-2-3 dopo.',
+  },
+  r7a: {
+    title: 'Corsa — Livello 7 (1ª sessione) · mar 31 mar',
+    body: '<strong>5\' camminando + 25\' corsa × 2.</strong> Il salto da 15\' a 25\' continui è il più significativo del piano. Parti lento: i primi 5\' di ogni blocco sono di assestamento. Non guardare il passo, guarda solo il respiro.',
+  },
+  r7b: {
+    title: 'Corsa — Livello 7 (2ª sessione) · ven 3 apr',
+    body: '<strong>5\' camminando + 25\' corsa × 2.</strong> Cerca il ritmo che "scorre" senza sforzo: quello è il tuo ritmo gara potenziale. Valutazione 1-2-3 dopo.',
+  },
+  r7c: {
+    title: 'Corsa — Livello 7 (3ª sessione) · dom 5 apr',
+    body: '<strong>5\' camminando + 25\' corsa × 2.</strong> Terza sessione di consolidamento. Se tutte e tre erano "1-2", martedì 8 sali al Lv 8 con piena fiducia.',
+  },
+  r8a: {
+    title: 'Corsa — Livello 8 (1ª sessione) · mar 8 apr',
+    body: '<strong>3\' camminando + 35\' corsa + 5\' cammino + 15\' corsa.</strong> Struttura nuova: blocco lungo + blocco corto finale. I 35\' devono essere corsi a passo facile — il blocco da 15\' finale è il vero test. Gambe fresche = lettura affidabile.',
+  },
+  r8b: {
+    title: 'Corsa — Livello 8 (2ª sessione) · gio 10 apr',
+    body: '<strong>3\' camminando + 35\' corsa + 5\' cammino + 15\' corsa.</strong> Seconda sessione Lv 8. Se va bene, da lunedì 14 sali al Lv 9. Se era dura, aggiungi una terza sabato 12 in sostituzione della forza B.',
+  },
+  r9a: {
+    title: 'Corsa — Livello 9 (1ª sessione) · lun 14 apr',
+    body: '<strong>5\' camminando + 45\' corsa + 5\' cammino + 15\' corsa.</strong> ~70 min di movimento. I 45\' continui sono la distanza più lunga del piano. Ritmo conversazionale obbligatorio: se non riesci a parlare, stai andando troppo forte.',
+  },
+  r9b: {
+    title: 'Corsa — Livello 9 (2ª sessione) · gio 17 apr',
+    body: '<strong>5\' camminando + 45\' corsa + 5\' cammino + 15\' corsa.</strong> Seconda volta sui 45\': dovrebbe sentirsi più gestibile della prima. Da qui la fiducia per la gara è costruita.',
+  },
+  r9c: {
+    title: 'Corsa Lv 9 (3ª, opt.) · sab 19 apr',
+    body: '<strong>5\' camminando + 45\' corsa + 5\' cammino + 15\' corsa.</strong> Opzionale: se sei stanco sostituisci con 25-30 min easy. Non serve spingere — la gara è tra 7 giorni.',
+  },
+  rsca: {
+    title: 'Corsa easy · lun 21 apr',
+    body: '<strong>20 min easy + 4×20s strides.</strong> Ritmo lentissimo. Ultimi 5 min: 4 accelerazioni di 20 secondi a ritmo gara con recupero camminando. Tiene vive le fibre veloci senza accumulare stanchezza.',
+  },
+  rscb: {
+    title: 'Corsa pre-gara · gio 24 apr',
+    body: '<strong>15 min easy + 3×20s strides.</strong> Solo schema motorio, niente distanza né ritmo. Stretching dinamico leggero dopo.',
+  },
+  r10: {
+    title: '🏁 GARA 10 km · dom 26 aprile 2026',
+    body: '<strong>Warm-up 10 min + 10 km.</strong> Strategia: parti al ritmo comodo del Lv 9. Primi 3 km conservativi: lì si decide la gara. Se a 5 km sei fresco, spingi. Piano B sempre valido: run/walk 8\'+2\' fino al traguardo. Finire è vincere.',
+  },
+
+  /* ── FORZA ── */
+  f1a: {
+    title: 'Forza gambe A · mar 24 mar',
+    body: '<span class="vol-tag">Sett. 1 — base</span><br><strong>3 giri · ~30 min · recupero 60s</strong><br>Squat corpo libero 3×12 · Affondi alternati 3×10/lato · Step-up su sedia 3×10/lato · Calf raise 3×15.<br>Nessun peso aggiunto. Focus tecnica e respirazione nasale. È la settimana di adattamento.',
+  },
+  f1b: {
+    title: 'Forza gambe B · gio 26 mar',
+    body: '<span class="vol-tag">Sett. 1 — base</span><br><strong>3 giri · ~30 min · recupero 60s</strong><br>Wall sit 3×30s · Squat con elastico 3×12 · Hip hinge con peso 3×10 · Glute bridge 3×15.',
+  },
+  f2a: {
+    title: 'Forza gambe A · gio 2 apr',
+    body: '<span class="vol-tag up">↑ +10% carico rispetto sett. 1</span><br><strong>3 giri · ~35 min · recupero 50s</strong><br>Squat con pesi 3×12 · Affondi con elastico 3×12/lato (+2 rip/lato) · Step-up alto 3×12/lato (+2 rip/lato) · Single-leg calf raise 3×12.<br>Aggiungi manubri leggeri allo squat. Recupero scende da 60s a 50s.',
+  },
+  f2b: {
+    title: 'Forza gambe B · dom 5 apr (o sab 4)',
+    body: '<span class="vol-tag up">↑ +10% carico rispetto sett. 1</span><br><strong>3 giri · ~35 min · recupero 50s</strong><br>Bulgarian split squat 3×10/lato · Hip hinge con pesi 3×12 · Glute bridge monogamba 3×10/lato · Wall sit 3×40s (+10s).<br>Se le gambe accusano le 3 corse, riduci a 2 giri senza sensi di colpa.',
+  },
+  f3a: {
+    title: 'Forza gambe A · mer 9 apr',
+    body: '<span class="vol-tag up">↑ PICCO — +1 giro + carico massimo</span><br><strong>4 giri · ~40 min · recupero 45s</strong><br>Squat con pesi 4×10 · Affondi cammino con elastico 4×10/lato · Step-up con pesi 4×10/lato.<br>Aumenta il peso dello squat rispetto sett. 2. Recupero scende a 45s. Se arrivi stanco: 3 giri invece di 4.',
+  },
+  f3b: {
+    title: 'Forza gambe B · ven 11 apr',
+    body: '<span class="vol-tag up">↑ PICCO — +1 giro + carico massimo</span><br><strong>4 giri · ~38 min · recupero 45s</strong><br>Bulgarian split squat con pesi 4×10/lato · RDL monogamba 3×10 · Glute bridge con elastico 4×12 · Wall sit 3×50s (+10s).',
+  },
+  f4a: {
+    title: 'Forza gambe · ven 18 apr',
+    body: '<span class="vol-tag">= carico sett. 2 (mantenimento)</span><br><strong>3 giri · ~30 min · recupero 55s</strong><br>Squat con pesi 3×12 · Affondi con elastico 3×10/lato · Step-up con pesi 3×10/lato.<br>Il volume di corsa (Lv 9) è già alto: la forza mantiene senza sovraccaricare.',
+  },
+  f5: {
+    title: 'Forza gambe scarico · mar 22 apr',
+    body: '<span class="vol-tag">↓ Scarico pre-gara</span><br><strong>2 giri soli · ~20 min · recupero 60s</strong><br>Squat 2×10 leggero · Affondi 2×8/lato · Step-up 2×8/lato.<br>Zero fatica. Finisci la sessione sentendoti esattamente come prima di iniziarla.',
+  },
+
+  /* ── ARRAMPICATA ── */
+  c1: {
+    title: 'Arrampicata · ven 27 mar',
+    body: '<strong>~75 min · tecnica.</strong> Boulder 4a–5b, focus piedi e bilanciamento. Niente potenza. Settimana di rientro dalla montagna: intensità bassa. Termina con 10 min stretching spalle e avambracci.',
+  },
+  c2: {
+    title: 'Arrampicata · sab 4 apr',
+    body: '<strong>~90 min · tecnica/moderata.</strong> Traversi, sequenze tecniche, qualche 5c–6a se ti senti bene. Domani (o ieri) c\'è corsa: non esaurire le gambe.',
+  },
+  c3: {
+    title: 'Arrampicata · sab 12 apr',
+    body: '<strong>~75 min · conservativa.</strong> Settimana più carica del piano: mantenimento, non progressione. Vie facili, boulder tecnico. Se venerdì sei già stanco, salta senza rimpianti.',
+  },
+  c4: {
+    title: 'Arrampicata · mer 16 apr',
+    body: '<strong>~75 min · moderata.</strong> Focus su upper body e tecnica. Niente boulder potente sui piedi: il volume di corsa al Lv 9 è già alto.',
+  },
+  c5: {
+    title: 'Arrampicata facile · mer 23 apr',
+    body: '<strong>45 min max · 4a–4c.</strong> Solo per tenere attivo il sistema nervoso. Se le gambe sono pesanti, salta.',
+  },
+};
+
+/* ══════════════════════════════════════════════════════════
+   SETTIMANE
+   piano: id del piano di appartenenza
+   cols: colonne griglia (default 7)
+   Per marcare un allenamento come fatto: done:true sul badge
+══════════════════════════════════════════════════════════ */
+const WEEKS = [
+  /* ── PIANO APR 2026 ── */
+  {
+    piano: 'apr2026',
+    label: 'Sett. 1  23–30 mar',
+    note: 'Recupero montagna (dom 22/3) + completamento Lv 6. Oggi mobilità obbligatoria. Corsa Lv 6 (3ª) flessibile: dom 29 se ti senti bene, lun 30 se hai bisogno di un giorno extra.',
+    cols: 8,
+    days: [
+      { date: 'Lun 23/3', today: true,
+        badges: [{ cls:'b-mob', txt:'Mobilità recupero', key:'mob0' }] },
+      { date: 'Mar 24/3',
+        badges: [{ cls:'b-forza', txt:'Forza gambe A', key:'f1a' }] },
+      { date: 'Mer 25/3',
+        badges: [{ cls:'b-run', txt:'Corsa Lv 6 (2ª)', key:'r6b' }] },
+      { date: 'Gio 26/3',
+        badges: [{ cls:'b-forza', txt:'Forza gambe B', key:'f1b' }] },
+      { date: 'Ven 27/3',
+        badges: [{ cls:'b-climb', txt:'Arrampicata', key:'c1' }] },
+      { date: 'Sab 28/3',
+        badges: [], rest: true },
+      { date: 'Dom 29/3', alt: true,
+        badges: [{ cls:'b-opt', txt:'Lv 6 (3ª) opt.', key:'r6c_dom' }] },
+      { date: 'Lun 30/3', alt: true,
+        badges: [{ cls:'b-opt', txt:'Lv 6 (3ª) alt. / mob.', key:'r6c_lun' }] },
+    ],
+  },
+  {
+    piano: 'apr2026',
+    label: 'Sett. 2  31 mar–6 apr',
+    note: 'Livello 7 — 3 sessioni. Il salto più impegnativo del piano (15\'→25\'). 3 corse, 2 forza, 1 arrampicata. Con 5 settimane hai il lusso di consolidare ogni livello senza fretta.',
+    cols: 7,
+    days: [
+      { date: 'Mar 31/3',
+        badges: [{ cls:'b-run', txt:'Corsa Lv 7 (1ª)', key:'r7a' }] },
+      { date: 'Mer 1/4',
+        badges: [{ cls:'b-mob', txt:'Mobilità', key:'mob2' }] },
+      { date: 'Gio 2/4',
+        badges: [{ cls:'b-forza', txt:'Forza gambe A', key:'f2a' }] },
+      { date: 'Ven 3/4',
+        badges: [{ cls:'b-run', txt:'Corsa Lv 7 (2ª)', key:'r7b' }] },
+      { date: 'Sab 4/4',
+        badges: [{ cls:'b-climb', txt:'Arrampicata', key:'c2' }] },
+      { date: 'Dom 5/4',
+        badges: [
+          { cls:'b-run',   txt:'Lv 7 (3ª)', key:'r7c' },
+          { cls:'b-forza', txt:'Forza B (opt.)', key:'f2b' },
+        ] },
+      { date: 'Lun 6/4',
+        badges: [], rest: true },
+    ],
+  },
+  {
+    piano: 'apr2026',
+    label: 'Sett. 3  7–13 apr',
+    note: '⚡ Picco — Livello 8 + forza al massimo volume. ATTENZIONE: il 7 apr è martedì. 2 corse Lv 8, 2 forza, 1 arrampicata. Se giovedì sei stanco, la forza B del venerdì si riduce a 2 giri.',
+    cols: 7,
+    days: [
+      { date: 'Mar 7/4',   /* ← CORRETTO: 7 apr è martedì */
+        badges: [{ cls:'b-run', txt:'Corsa Lv 8 (1ª)', key:'r8a' }] },
+      { date: 'Mer 8/4',
+        badges: [{ cls:'b-mob', txt:'Recupero attivo', key:'mob3' }] },
+      { date: 'Gio 9/4',
+        badges: [{ cls:'b-forza', txt:'Forza gambe A', key:'f3a' }] },
+      { date: 'Ven 10/4',
+        badges: [{ cls:'b-run', txt:'Corsa Lv 8 (2ª)', key:'r8b' }] },
+      { date: 'Sab 11/4',
+        badges: [{ cls:'b-forza', txt:'Forza gambe B', key:'f3b' }] },
+      { date: 'Dom 12/4',
+        badges: [{ cls:'b-climb', txt:'Arrampicata', key:'c3' }] },
+      { date: 'Lun 13/4',
+        badges: [], rest: true },
+    ],
+  },
+  {
+    piano: 'apr2026',
+    label: 'Sett. 4  14–20 apr',
+    note: 'Livello 9 — fino a 3 sessioni. Forza scende a 1 sessione: il volume di corsa è già alto. I 45\' continui sono la distanza più lunga del piano: consolidarli qui costruisce la fiducia per la gara.',
+    cols: 7,
+    days: [
+      { date: 'Lun 14/4',
+        badges: [{ cls:'b-run', txt:'Corsa Lv 9 (1ª)', key:'r9a' }] },
+      { date: 'Mar 15/4',
+        badges: [{ cls:'b-mob', txt:'Mobilità', key:'mob4' }] },
+      { date: 'Mer 16/4',
+        badges: [{ cls:'b-climb', txt:'Arrampicata', key:'c4' }] },
+      { date: 'Gio 17/4',
+        badges: [{ cls:'b-run', txt:'Corsa Lv 9 (2ª)', key:'r9b' }] },
+      { date: 'Ven 18/4',
+        badges: [{ cls:'b-forza', txt:'Forza gambe', key:'f4a' }] },
+      { date: 'Sab 19/4', alt: true,
+        badges: [{ cls:'b-opt', txt:'Lv 9 (3ª) opt.', key:'r9c' }] },
+      { date: 'Dom 20/4',
+        badges: [], rest: true },
+    ],
+  },
+  {
+    piano: 'apr2026',
+    label: 'Sett. 5  21–26 apr — Scarico',
+    note: '🏁 Scarico e gara domenica 26 aprile. 2 corse brevi, 1 forza leggerissima, arrampicata facile, mobilità. Venerdì 25: riposo serale e sonno. Il lavoro è fatto.',
+    cols: 7,
+    days: [
+      { date: 'Lun 21/4',
+        badges: [{ cls:'b-run', txt:'Corsa easy 20 min', key:'rsca' }] },
+      { date: 'Mar 22/4',
+        badges: [{ cls:'b-forza', txt:'Forza scarico', key:'f5' }] },
+      { date: 'Mer 23/4',
+        badges: [{ cls:'b-climb', txt:'Arrampicata facile', key:'c5' }] },
+      { date: 'Gio 24/4',
+        badges: [{ cls:'b-run', txt:'Corsa 15 min + strides', key:'rscb' }] },
+      { date: 'Ven 25/4',
+        badges: [{ cls:'b-mob', txt:'Mobilità pre-gara', key:'mob5' }] },
+      { date: 'Sab 26/4 🏁',
+        badges: [{ cls:'b-gara', txt:'🏁 GARA 10 km', key:'r10' }] },
+      { date: '',
+        badges: [], rest: true },
+    ],
+  },
+
+  /* ── PIANO SUCCESSIVO (esempio commentato) ──
+  {
+    piano: 'giu2026',
+    label: 'Sett. 1  1–7 mag',
+    note: 'Prima settimana del nuovo piano.',
+    cols: 7,
+    days: [
+      { date: 'Lun 1/5', badges: [{ cls:'b-run', txt:'Corsa easy', key:'r_new1' }] },
+      ... (altri giorni)
+    ],
+  },
+  */
+];
+
+/* ══════════════════════════════════════════════════════════
+   ESERCIZI & VIDEO
+══════════════════════════════════════════════════════════ */
+function ytUrl(q) {
+  return 'https://www.youtube.com/results?search_query=' + encodeURIComponent(q);
+}
+
+const EX_CATS = [
+  { id: 'forza', label: 'Forza gambe' },
+  { id: 'mob',   label: 'Mobilità' },
+  { id: 'corsa', label: 'Tecnica corsa' },
+];
+
+const ESERCIZI = {
+  forza: [
+    {
+      section: 'Esercizi principali',
+      items: [
+        { title:'Squat corpo libero', muscle:'Quadricipiti · glutei · core', tip:'Piedi larghezza spalle, punte leggermente fuori. Ginocchia seguono le punte. Scendi come su una sedia dietro di te.', yt:'squat corpo libero esecuzione corretta tutorial italiano' },
+        { title:'Squat con pesi (manubri)', muscle:'Quadricipiti · glutei · core', tip:'Manubri ai fianchi o sulle spalle. Stessa meccanica del corpo libero. Tronco eretto, schiena neutra.', yt:'squat con manubri esecuzione corretta tutorial italiano' },
+        { title:'Squat con elastico (intorno alle cosce)', muscle:'Quadricipiti · glutei medi · abduttori', tip:'Mini-band intorno alle cosce. Spingi le ginocchia fuori durante tutto il movimento. Attiva i glutei medi spesso trascurati.', yt:'squat elastico mini band tutorial italiano gambe' },
+        { title:'Affondi alternati', muscle:'Quadricipiti · glutei · femorali', tip:'Passo ampio, ginocchio posteriore sfiora il pavimento. Ginocchio anteriore non supera la punta del piede. Busto eretto.', yt:'affondi alternati esecuzione corretta tutorial italiano' },
+        { title:'Affondi cammino con elastico', muscle:'Quadricipiti · glutei · stabilizzatori', tip:'Elastico intorno alle cosce per attivare i glutei medi. Avanza passo dopo passo mantenendo la tensione laterale.', yt:'affondi camminati elastico tutorial esecuzione italiano' },
+        { title:'Step-up su sedia', muscle:'Quadricipiti · glutei · equilibrio', tip:'Spingi con il tallone del piede sul gradino, non con la punta. Porta la coscia opposta in alto. Fondamentale per la montagna.', yt:'step up sedia esercizio gambe tutorial italiano' },
+        { title:'Step-up con pesi', muscle:'Quadricipiti · glutei · femorali', tip:'Stessa meccanica dello step-up base. I manubri aumentano il carico senza cambiare il gesto. Altezza gradino: coscia parallela al suolo.', yt:'step up manubri gradino tutorial italiano' },
+        { title:'Bulgarian split squat', muscle:'Quadricipiti · glutei · stabilizzatori caviglia', tip:'Piede posteriore su sedia. Scendi verticalmente, non in avanti. L\'esercizio più specifico per la salita in montagna.', yt:'bulgarian split squat tutorial italiano esecuzione corretta' },
+        { title:'Hip hinge / Romanian deadlift', muscle:'Femorali · glutei · erettori schiena', tip:'Busto in avanti con schiena piatta, bacino indietro. Ginocchia si piegano poco. Senti l\'allungamento dei femorali.', yt:'hip hinge deadlift rumeno manubri tutorial italiano' },
+        { title:'RDL monogamba (single-leg deadlift)', muscle:'Femorali · glutei · propriocezione', tip:'Equilibrio su una gamba. Busto avanza, gamba libera sale dietro. Essenziale per prevenire distorsioni in discesa.', yt:'single leg deadlift monogamba tutorial italiano esecuzione' },
+        { title:'Glute bridge', muscle:'Glutei · core · femorali', tip:'Schiena a terra, piedi vicini ai glutei. Spingi i fianchi in alto, spremi i glutei in cima. Tieni 1-2 secondi.', yt:'glute bridge esecuzione corretta tutorial italiano' },
+        { title:'Glute bridge monogamba', muscle:'Glutei · stabilizzatori · core', tip:'Una gamba tesa in aria. Richiede stabilità del bacino. Corregge asimmetrie tra i lati.', yt:'glute bridge monogamba single leg tutorial italiano' },
+        { title:'Glute bridge con elastico', muscle:'Glutei medi · abduttori', tip:'Mini-band sopra le ginocchia. Spingi le ginocchia fuori mentre sali. Attiva i glutei medi (previene il valgismo).', yt:'glute bridge elastico mini band tutorial gambe italiano' },
+        { title:'Wall sit', muscle:'Quadricipiti · resistenza isometrica', tip:'Schiena al muro, cosce parallele al suolo, ginocchia a 90°. Esercizio isometrico: simula l\'affaticamento della discesa prolungata.', yt:'wall sit esercizio isometrico tutorial italiano' },
+        { title:'Calf raise (in piedi)', muscle:'Polpacci (gastrocnemio)', tip:'Sali sulle punte lentamente, scendi lentamente. Su un gradino per maggiore escursione. Fondamentale per corsa e discesa.', yt:'calf raise polpacci tutorial italiano esecuzione gradino' },
+        { title:'Single-leg calf raise', muscle:'Polpacci · stabilità caviglia', tip:'Una gamba sola. Molto più difficile del bilaterale. Inizia appoggiandoti a un muro. Progressione naturale del calf raise.', yt:'single leg calf raise monogamba polpacci tutorial italiano' },
+        { title:'Box jump basso', muscle:'Potenza gambe · reattività', tip:'Gradino basso 20-30 cm. Atterraggio morbido con ginocchia flesse, mai rigido. Solo settimana 3 di picco.', yt:'box jump basso tutorial esecuzione sicura italiano' },
+      ],
+    },
+  ],
+  mob: [
+    {
+      section: 'Mobilità anca e catena posteriore',
+      items: [
+        { title:'World lunge', muscle:'Flessori anca · adduttori · torace', tip:'Affondo lungo, mano a terra lato piede anteriore, poi ruota il busto aprendo il braccio verso il soffitto. Uno dei migliori esercizi di mobilità globale.', yt:'world lunge mobilità anca tutorial italiano' },
+        { title:'90/90 stretch', muscle:'Rotatori interni/esterni anca · piriforme', tip:'Seduto a terra, entrambe le gambe a 90°. Schiena dritta. Inclinati in avanti sulla gamba anteriore. Per chi porta il peso dello zaino.', yt:'90 90 hip stretch mobilità anca tutorial italiano' },
+        { title:'Piriforme stretch', muscle:'Piriforme · rotatori profondi anca', tip:'Sdraiato, porta il piede sul ginocchio opposto (figura 4). Tira la coscia verso il petto. Allevia il dolore al nervo sciatico da affaticamento.', yt:'piriforme stretch sciatico tutorial italiano' },
+        { title:'Ileopsoas stretch', muscle:'Flessori anca · ileopsoas', tip:'Affondo basso, ginocchio posteriore a terra. Spingi il bacino in avanti e in basso. Contrasta l\'accorciamento da corsa e postura seduta.', yt:'ileopsoas stretch flessori anca tutorial italiano' },
+      ],
+    },
+    {
+      section: 'Mobilità caviglia e polpacci',
+      items: [
+        { title:'Pompate caviglia in downward dog', muscle:'Polpacci · tendine di Achille · caviglia', tip:'Posizione cane verso il basso. Alterna il tallone al suolo lentamente su ogni lato. Fondamentale dopo corsa e discesa.', yt:'downward dog pompate polpacci mobilità caviglia tutorial' },
+        { title:'Mobilità caviglia a muro', muscle:'Articolazione tibiotarsica · peronei', tip:'Piede vicino al muro, spingi il ginocchio verso il muro senza alzare il tallone. Aumenta la distanza progressivamente.', yt:'mobilità caviglia muro tutorial ankle mobility italiano' },
+        { title:'Single-leg deadlift leggerissimo (propriocezione)', muscle:'Propriocezione caviglia · femorali · equilibrio', tip:'Peso minimo o corpo libero, lentissimo. L\'obiettivo è allenare i recettori della caviglia per terreno irregolare.', yt:'single leg deadlift propriocezione equilibrio tutorial' },
+      ],
+    },
+    {
+      section: 'Recupero miofasciale',
+      items: [
+        { title:'Foam roller quadricipiti', muscle:'Quadricipiti · fascia lata · IT-band', tip:'Lento, 30-60 secondi per lato. Fermati sui punti dolenti 5-10 secondi. Non rotolare veloce. Dopo ogni corsa lunga.', yt:'foam roller quadricipiti it band tutorial italiano' },
+        { title:'Foam roller polpacci', muscle:'Gastrocnemio · soleo · tendine Achille', tip:'Sovrapponi una gamba sull\'altra per aumentare il peso. Ruota il piede interno/esterno per coprire tutto il muscolo.', yt:'foam roller polpacci massaggio miofasciale tutorial italiano' },
+        { title:'Respirazione diaframmatica (metodo RV)', muscle:'Diaframma · core profondo · sistema nervoso', tip:'Sdraiato, mano sul petto e mano sulla pancia. Inspira gonfiando solo la pancia. Espira lentamente. 5 minuti dopo sessioni intense.', yt:'respirazione diaframmatica tutorial tecnica italiano' },
+      ],
+    },
+    {
+      section: 'Mobilità dinamica (pre-gara / warm-up)',
+      items: [
+        { title:'Leg swing (avanti/dietro e laterali)', muscle:'Flessori/estensori anca · abduttori', tip:'Appoggiati a un muro. Oscillazioni libere e controllate, non forzate. Attiva senza affaticare. Solo dinamica prima della gara.', yt:'leg swing mobilità dinamica anca warm up corsa italiano' },
+        { title:'Intrarotazioni anca', muscle:'Rotatori interni anca · glutei medi', tip:'In piedi, ginocchio in su e ruota verso l\'interno. Lento e controllato. Attiva i muscoli stabilizzatori.', yt:'intrarotazione anca mobilità dinamica warm up italiano' },
+        { title:'A-skip (skip leggero)', muscle:'Flessori anca · polpacci · coordinazione', tip:'Ginocchio in alto, piede di spinta che si estende. Ritmico e leggero. 2×20 metri bastano come attivazione pre-gara.', yt:'skip corsa esercizio riscaldamento a-skip tutorial italiano' },
+      ],
+    },
+  ],
+  corsa: [
+    {
+      section: 'Tecnica e metodo',
+      items: [
+        { title:'Respirazione nasale durante la corsa', muscle:'Tecnica respiratoria · controllo intensità', tip:'Cardine del metodo RV: se non riesci a respirare solo dal naso, stai andando troppo forte. Rallenta finché non la mantieni. Migliora l\'efficienza aerobica.', yt:'respirazione nasale corsa metodo tecnica tutorial italiano' },
+        { title:'Strides (accelerazioni controllate)', muscle:'Fibre veloci · tecnica di passo', tip:'20 secondi a ritmo gara o leggermente più veloce, poi cammina 60 secondi. Nelle settimane di scarico: tengono vive le fibre veloci senza accumulare fatica.', yt:'strides accelerazioni corsa tecnica tutorial italiano' },
+        { title:'Tecnica di corsa in salita', muscle:'Postura · braccia · frequenza passi', tip:'Busto leggermente in avanti, passi più corti, braccia che pompano. Non tentare di mantenere la stessa velocità in piano.', yt:'tecnica corsa salita tutorial italiano montagna' },
+        { title:'Run/walk — strategia gara', muscle:'Gestione fatica · tattica', tip:'8\' corsa + 2\' cammino: strategia valida se non si arriva al Lv 10. Il cammino non è fallimento — è tattica. Spesso si finisce più veloci che correndo tutto di fila al limite.', yt:'run walk strategia gara 10km tutorial italiano' },
+      ],
+    },
+  ],
+};
+
+/* ══════════════════════════════════════════════════════════
+   LOGICA APP
+══════════════════════════════════════════════════════════ */
+
+/* Settimane del piano corrente */
+function weeksForPiano(pid) {
+  return WEEKS.filter(w => w.piano === pid);
+}
+
+let currentPiano = PIANI.find(p => p.current)?.id || PIANI[0].id;
+let currentWeekIdx = 0;
+let currentExCat = 'forza';
+
+/* ── Countdown ── */
+function updateCountdown() {
+  const gara = new Date('2026-04-26');
+  const today = new Date();
+  today.setHours(0,0,0,0);
+  const diff = Math.ceil((gara - today) / 86400000);
+  const el = document.getElementById('days-to-go');
+  if (el) el.textContent = diff > 0 ? `${diff} giorni alla gara` : diff === 0 ? 'Oggi è il giorno!' : 'Gara completata';
+}
+
+/* ── Section switcher ── */
+function showSection(id) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.main-nav button').forEach(b => b.classList.remove('active'));
+  document.getElementById('section-' + id).classList.add('active');
+  event.currentTarget.classList.add('active');
+  if (id === 'storico') renderStorico();
+  if (id === 'esercizi') renderEsercizi();
+}
+
+/* ── Calendario ── */
+function renderWeekTabs() {
+  const weeks = weeksForPiano(currentPiano);
+  const tabs = document.getElementById('week-tabs');
+  tabs.innerHTML = weeks.map((w, i) =>
+    `<button class="week-tab${i === currentWeekIdx ? ' active' : ''}" onclick="selectWeek(${i})">${w.label}</button>`
+  ).join('');
+}
+
+function selectWeek(idx) {
+  currentWeekIdx = idx;
+  renderWeekTabs();
+  renderCalendar();
+  document.getElementById('detail-panel').innerHTML = '<div class="detail-empty">— clicca su un allenamento per i dettagli —</div>';
+}
+
+function renderCalendar() {
+  const weeks = weeksForPiano(currentPiano);
+  const w = weeks[currentWeekIdx];
+  if (!w) return;
+  document.getElementById('week-note').textContent = w.note;
+  const cols = w.cols || 7;
+  const grid = document.getElementById('cal-grid');
+  grid.className = `cal-grid cols-${cols}`;
+  grid.innerHTML = w.days.map(day => {
+    const isRest = !day.badges || day.badges.length === 0;
+    const cls = ['cal-day', isRest ? 'rest' : '', day.today ? 'today' : '', day.alt ? 'alt' : ''].filter(Boolean).join(' ');
+    const badges = (day.badges || []).map(b => {
+      const doneCls = b.done ? ' b-done' : '';
+      const onclick = b.done ? '' : `onclick="showDetail('${b.key}')"`;
+      return `<span class="badge ${b.cls}${doneCls}" ${onclick}>${b.txt}</span>`;
+    }).join('');
+    return `<div class="${cls}">
+      <div class="day-date">${day.date || ''}</div>
+      ${isRest ? '<span class="rest-label">Riposo</span>' : badges}
+    </div>`;
+  }).join('');
+}
+
+function showDetail(key) {
+  const d = DETAILS[key];
+  if (!d) return;
+  document.getElementById('detail-panel').innerHTML =
+    `<div class="detail-title">${d.title}</div>${d.body}`;
+}
+
+/* ── Esercizi ── */
+function renderExCatTabs() {
+  document.getElementById('ex-cat-tabs').innerHTML = EX_CATS.map(c =>
+    `<button class="ex-cat-tab${c.id === currentExCat ? ' active' : ''}" onclick="selectExCat('${c.id}')">${c.label}</button>`
+  ).join('');
+}
+
+function selectExCat(id) {
+  currentExCat = id;
+  renderExCatTabs();
+  renderEsercizi();
+}
+
+function renderEsercizi() {
+  renderExCatTabs();
+  const groups = ESERCIZI[currentExCat] || [];
+  let html = '';
+  groups.forEach(g => {
+    html += `<div class="ex-section-label">${g.section}</div><div class="ex-grid">`;
+    g.items.forEach(ex => {
+      html += `<div class="ex-card">
+        <div class="ex-card-title">${ex.title}</div>
+        <div class="ex-card-muscle">${ex.muscle}</div>
+        <div class="ex-card-tip">${ex.tip}</div>
+        <a class="yt-btn" href="${ytUrl(ex.yt)}" target="_blank" rel="noopener">
+          <svg class="yt-icon" viewBox="0 0 24 24"><path d="M21.8 8s-.2-1.4-.8-2c-.8-.8-1.6-.8-2-.9C16.3 5 12 5 12 5s-4.3 0-7 .1c-.4.1-1.2.1-2 .9-.6.6-.8 2-.8 2S2 9.6 2 11.2v1.5c0 1.6.2 3.2.2 3.2s.2 1.4.8 2c.8.8 1.8.8 2.3.9C6.8 19 12 19 12 19s4.3 0 7-.2c.4-.1 1.2-.1 2-.9.6-.6.8-2 .8-2s.2-1.6.2-3.2v-1.5C22 9.6 21.8 8 21.8 8zM9.8 14.5V9.3l5.4 2.6-5.4 2.6z"/></svg>
+          Cerca su YouTube
+        </a>
+      </div>`;
+    });
+    html += '</div>';
+  });
+  document.getElementById('ex-content').innerHTML = html;
+}
+
+/* ── Storico ── */
+function renderStorico() {
+  document.getElementById('storico-list').innerHTML = PIANI.map(p => `
+    <div class="storico-plan-item" style="cursor:pointer" onclick="selectPiano('${p.id}');showSection('calendario')">
+      <div>
+        <div class="storico-plan-name">${p.label}</div>
+        <div class="storico-plan-meta">${p.meta}${p.gara ? ' · ' + p.gara : ''}</div>
+      </div>
+      <span class="storico-badge${p.current ? ' current' : ''}">${p.current ? 'in corso' : 'completato'}</span>
+    </div>
+  `).join('');
+}
+
+function selectPiano(id) {
+  currentPiano = id;
+  currentWeekIdx = 0;
+  renderWeekTabs();
+  renderCalendar();
+  document.getElementById('detail-panel').innerHTML = '<div class="detail-empty">— clicca su un allenamento per i dettagli —</div>';
+}
+
+/* ── INIT ── */
+updateCountdown();
+renderWeekTabs();
+renderCalendar();
+</script>
+</body>
+</html>
