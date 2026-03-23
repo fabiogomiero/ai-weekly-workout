@@ -1,6 +1,6 @@
 import json
 import logging
-from datetime import date, datetime, time
+from datetime import date, datetime, time, timedelta
 from zoneinfo import ZoneInfo
 
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
@@ -38,7 +38,7 @@ def load_plan_data() -> dict:
 async def evening_check(context: ContextTypes.DEFAULT_TYPE):
     """Invia il check serale per ogni workout di oggi."""
     plan = load_plan_data()
-    today = date.today()
+    today = datetime.now(tz=ROME).date()
 
     if is_rest_day(today, plan):
         logger.info("Oggi è giorno di riposo. Nessun check serale.")
@@ -48,34 +48,38 @@ async def evening_check(context: ContextTypes.DEFAULT_TYPE):
     if not workouts:
         return
 
-    sb = get_supabase()
+    try:
+        sb = get_supabase()
 
-    for workout in workouts:
-        # Anti-doppio invio per questa (date, workout_key)
-        existing = sb.table('workout_log').select('evening_check_sent').eq('date', today.isoformat()).eq('workout_key', workout['key']).execute()
-        if existing.data and existing.data[0].get('evening_check_sent'):
-            logger.info(f"Check serale già inviato per {today} / {workout['key']}")
-            continue
+        for workout in workouts:
+            # Anti-doppio invio per questa (date, workout_key)
+            existing = sb.table('workout_log').select('evening_check_sent').eq('date', today.isoformat()).eq('workout_key', workout['key']).execute()
+            if existing.data and existing.data[0].get('evening_check_sent'):
+                logger.info(f"Check serale già inviato per {today} / {workout['key']}")
+                continue
 
-        # Upsert: segna check inviato (status rimane NULL fino alla risposta)
-        sb.table('workout_log').upsert(
-            {'date': today.isoformat(), 'workout_key': workout['key'], 'evening_check_sent': True},
-            on_conflict='date,workout_key'
-        ).execute()
+            # Upsert: segna check inviato (status rimane NULL fino alla risposta)
+            sb.table('workout_log').upsert(
+                {'date': today.isoformat(), 'workout_key': workout['key'], 'evening_check_sent': True},
+                on_conflict='date,workout_key'
+            ).execute()
 
-        keyboard = InlineKeyboardMarkup([
-            [
-                InlineKeyboardButton("✅ Sì", callback_data=f"done:{today.isoformat()}:{workout['key']}"),
-                InlineKeyboardButton("❌ No", callback_data=f"no:{today.isoformat()}:{workout['key']}"),
-            ]
-        ])
+            keyboard = InlineKeyboardMarkup([
+                [
+                    InlineKeyboardButton("✅ Sì", callback_data=f"done:{today.isoformat()}:{workout['key']}"),
+                    InlineKeyboardButton("❌ No", callback_data=f"no:{today.isoformat()}:{workout['key']}"),
+                ]
+            ])
 
-        await context.bot.send_message(
-            chat_id=CHAT_ID,
-            text=f"🏃 Hai fatto l'allenamento di oggi?\n\n*{workout['title']}*",
-            parse_mode='Markdown',
-            reply_markup=keyboard,
-        )
+            await context.bot.send_message(
+                chat_id=CHAT_ID,
+                text=f"🏃 Hai fatto l'allenamento di oggi?\n\n*{workout['title']}*",
+                parse_mode='Markdown',
+                reply_markup=keyboard,
+            )
+    except Exception as e:
+        logger.error(f"Errore check serale: {e}")
+        await context.bot.send_message(chat_id=CHAT_ID, text=f"⚠️ Errore check serale: {e}")
 
 
 # ── MORNING CHECK (07:00) ──────────────────────────────────────────────────
@@ -83,8 +87,8 @@ async def evening_check(context: ContextTypes.DEFAULT_TYPE):
 async def morning_check(context: ContextTypes.DEFAULT_TYPE):
     """Controlla ieri e invia il workout di oggi."""
     plan = load_plan_data()
-    today = date.today()
-    yesterday = date.fromordinal(today.toordinal() - 1)
+    today = datetime.now(tz=ROME).date()
+    yesterday = today - timedelta(days=1)
 
     # Workout di oggi
     today_workouts = get_workouts_for_date(today, plan)
@@ -99,65 +103,74 @@ async def morning_check(context: ContextTypes.DEFAULT_TYPE):
         await context.bot.send_message(chat_id=CHAT_ID, text=f"☀️ Buongiorno!\n\n{today_txt}", parse_mode='Markdown')
         return
 
-    sb = get_supabase()
-    yesterday_logs = sb.table('workout_log').select('workout_key,status,reason').eq('date', yesterday.isoformat()).execute()
-    skipped = [r for r in (yesterday_logs.data or []) if r.get('status') == 'skipped']
+    try:
+        sb = get_supabase()
+        yesterday_logs = sb.table('workout_log').select('workout_key,status,reason').eq('date', yesterday.isoformat()).execute()
+        skipped = [r for r in (yesterday_logs.data or []) if r.get('status') == 'skipped']
 
-    if not skipped:
-        # Nessun workout saltato (o nessuna risposta = beneficio del dubbio)
-        await context.bot.send_message(chat_id=CHAT_ID, text=f"☀️ Buongiorno!\n\n{today_txt}", parse_mode='Markdown')
-        return
+        if not skipped:
+            # Nessun workout saltato (o nessuna risposta = beneficio del dubbio)
+            await context.bot.send_message(chat_id=CHAT_ID, text=f"☀️ Buongiorno!\n\n{today_txt}", parse_mode='Markdown')
+            return
 
-    # Workout saltati ieri → chiedi a Claude
-    yesterday_workouts = get_workouts_for_date(yesterday, plan)
-    week_ctx = get_week_context(today, plan) or {}
+        # Workout saltati ieri → chiedi a Claude
+        yesterday_workouts = get_workouts_for_date(yesterday, plan)
+        week_ctx = get_week_context(today, plan) or {}
 
-    skipped_with_detail = []
-    for s in skipped:
-        detail = next((w for w in yesterday_workouts if w['key'] == s['workout_key']), None)
-        if detail:
-            skipped_with_detail.append({
-                'tipo': detail['cls'].replace('b-', '').capitalize(),
-                'descrizione': detail['title'],
-                'reason': s.get('reason', 'no_time'),
-            })
+        skipped_with_detail = []
+        for s in skipped:
+            detail = next((w for w in yesterday_workouts if w['key'] == s['workout_key']), None)
+            if detail:
+                skipped_with_detail.append({
+                    'tipo': detail['cls'].replace('b-', '').capitalize(),
+                    'descrizione': detail['title'],
+                    'reason': s.get('reason', 'no_time'),
+                })
 
-    week_num = 0
-    for i, w in enumerate(plan['weeks']):
-        for d in w['days']:
-            if d.get('isoDate') == today.isoformat():
-                week_num = i + 1
-                break
+        if not skipped_with_detail:
+            # Skipped keys no longer in plan (plan was updated) — treat as done
+            await context.bot.send_message(chat_id=CHAT_ID, text=f"☀️ Buongiorno!\n\n{today_txt}", parse_mode='Markdown')
+            return
 
-    claude_context = {
-        'skipped_workouts': skipped_with_detail,
-        'today_workouts': [{'tipo': w['cls'].replace('b-','').capitalize(), 'descrizione': w['title']} for w in today_workouts],
-        'week_number': week_num,
-        'week_focus': week_ctx.get('note', ''),
-        'days_to_race': (date.fromisoformat(RACE_DATE_STR) - today).days,
-        'primary_goal': 'Gara 10km 26 Aprile 2026',
-        'secondary_goal': 'Forza gambe (Resistenza Verticale) + arrampicata',
-    }
+        week_num = 0
+        for i, w in enumerate(plan['weeks']):
+            for d in w['days']:
+                if d.get('isoDate') == today.isoformat():
+                    week_num = i + 1
+                    break
 
-    adaptation, today_modified, today_override = propose_adaptation(claude_context, ANTHROPIC_API_KEY)
+        claude_context = {
+            'skipped_workouts': skipped_with_detail,
+            'today_workouts': [{'tipo': w['cls'].replace('b-','').capitalize(), 'descrizione': w['title']} for w in today_workouts],
+            'week_number': week_num,
+            'week_focus': week_ctx.get('note', ''),
+            'days_to_race': (date.fromisoformat(RACE_DATE_STR) - today).days,
+            'primary_goal': 'Gara 10km 26 Aprile 2026',
+            'secondary_goal': 'Forza gambe (Resistenza Verticale) + arrampicata',
+        }
 
-    # Salva l'adattamento proposto
-    for s in skipped:
-        sb.table('workout_log').update({'adapted_notes': adaptation}).eq('date', yesterday.isoformat()).eq('workout_key', s['workout_key']).execute()
+        adaptation, today_modified, today_override = propose_adaptation(claude_context, ANTHROPIC_API_KEY)
 
-    skipped_names = ', '.join(s['descrizione'] for s in skipped_with_detail)
-    reasons = ', '.join('stanchezza' if s['reason'] == 'tired' else 'mancanza di tempo' for s in skipped_with_detail)
+        # Salva l'adattamento proposto
+        for s in skipped:
+            sb.table('workout_log').update({'adapted_notes': adaptation}).eq('date', yesterday.isoformat()).eq('workout_key', s['workout_key']).execute()
 
-    if today_modified and today_override:
-        today_txt = f"💪 *Oggi (adattato):* {today_override}"
+        skipped_names = ', '.join(s['descrizione'] for s in skipped_with_detail)
+        reasons = ', '.join('stanchezza' if s['reason'] == 'tired' else 'mancanza di tempo' for s in skipped_with_detail)
 
-    msg = (
-        f"☀️ Buongiorno!\n\n"
-        f"⚠️ Ieri hai saltato: _{skipped_names}_ ({reasons})\n"
-        f"📋 Claude propone: {adaptation}\n\n"
-        f"{today_txt}"
-    )
-    await context.bot.send_message(chat_id=CHAT_ID, text=msg, parse_mode='Markdown')
+        if today_modified and today_override:
+            today_txt = f"💪 *Oggi (adattato):* {today_override}"
+
+        msg = (
+            f"☀️ Buongiorno!\n\n"
+            f"⚠️ Ieri hai saltato: _{skipped_names}_ ({reasons})\n"
+            f"📋 Claude propone: {adaptation}\n\n"
+            f"{today_txt}"
+        )
+        await context.bot.send_message(chat_id=CHAT_ID, text=msg, parse_mode='Markdown')
+    except Exception as e:
+        logger.error(f"Errore check mattutino: {e}")
+        await context.bot.send_message(chat_id=CHAT_ID, text=f"⚠️ Errore check mattutino: {e}")
 
 
 # ── CALLBACK HANDLERS ──────────────────────────────────────────────────────
