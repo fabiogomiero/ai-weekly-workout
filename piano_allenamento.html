@@ -554,7 +554,48 @@ h1 em {
   .cal-grid.cols-7,
   .cal-grid.cols-8 { grid-template-columns: repeat(2, 1fr); }
 }
+
+/* ── STATO WORKOUT (Supabase) ── */
+.b-done {
+  opacity: 0.5;
+  text-decoration: line-through;
+  cursor: default;
+}
+.b-skipped {
+  opacity: 0.6;
+  outline: 2px solid var(--climb);
+}
+
+/* ── PULSANTE FATTO ── */
+.btn-fatto {
+  display: block;
+  margin-top: 6px;
+  padding: 3px 10px;
+  font-size: 0.7rem;
+  font-family: var(--mono);
+  background: transparent;
+  border: 1px solid var(--line2);
+  color: var(--txt2);
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.btn-fatto:hover:not(:disabled) {
+  border-color: var(--run);
+  color: var(--run);
+}
+.btn-fatto-done {
+  border-color: var(--done);
+  color: var(--done);
+  cursor: default;
+  opacity: 0.7;
+}
+.btn-fatto-skipped {
+  border-color: var(--climb);
+  color: var(--climb);
+}
 </style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
 <div class="shell">
@@ -693,6 +734,15 @@ h1 em {
 </div><!-- /shell -->
 
 <script>
+// ── SUPABASE CONFIG ──
+// Usa la anon key (non la service role key) — ok per uso personale con RLS
+const SUPABASE_URL = 'https://YOUR_PROJECT.supabase.co';  // sostituisci dopo setup Supabase
+const SUPABASE_ANON_KEY = 'eyJ...';                        // sostituisci dopo setup Supabase
+const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+// Map: "YYYY-MM-DD:workout_key" → { status, reason }
+let workoutLogCache = {};
+
 // PIANI, DETAILS, WEEKS vengono caricati da data/plan_apr2026.json all'avvio
 let PIANI = [], DETAILS = {}, WEEKS = [];
 
@@ -839,14 +889,35 @@ function renderCalendar() {
   const cols = w.cols || 7;
   const grid = document.getElementById('cal-grid');
   grid.className = `cal-grid cols-${cols}`;
+
   grid.innerHTML = w.days.map(day => {
     const isRest = !day.badges || day.badges.length === 0;
     const cls = ['cal-day', isRest ? 'rest' : '', day.today ? 'today' : '', day.alt ? 'alt' : ''].filter(Boolean).join(' ');
+
     const badges = (day.badges || []).map(b => {
-      const doneCls = b.done ? ' b-done' : '';
-      const onclick = b.done ? '' : `onclick="showDetail('${b.key}')"`;
-      return `<span class="badge ${b.cls}${doneCls}" ${onclick}>${b.txt}</span>`;
+      const logKey = `${day.isoDate || ''}:${b.key}`;
+      const logEntry = day.isoDate ? workoutLogCache[logKey] : null;
+      const isDone = logEntry?.status === 'done';
+      const isSkipped = logEntry?.status === 'skipped';
+
+      const statusCls = isDone ? ' b-done' : isSkipped ? ' b-skipped' : '';
+      const onclick = `onclick="showDetail('${b.key}')"`;
+
+      // Pulsante Fatto (su tutti i giorni con workout, passati e presenti)
+      let fatoBtn = '';
+      if (day.isoDate && !isRest) {
+        if (isDone) {
+          fatoBtn = `<button class="btn-fatto btn-fatto-done" disabled>✓ Completato</button>`;
+        } else if (isSkipped) {
+          fatoBtn = `<button class="btn-fatto btn-fatto-skipped" onclick="markAsDone('${day.isoDate}','${b.key}',this)">↩ Recuperato</button>`;
+        } else {
+          fatoBtn = `<button class="btn-fatto" onclick="markAsDone('${day.isoDate}','${b.key}',this)">✓ Fatto</button>`;
+        }
+      }
+
+      return `<span class="badge ${b.cls}${statusCls}" ${onclick}>${b.txt}</span>${fatoBtn}`;
     }).join('');
+
     return `<div class="${cls}">
       <div class="day-date">${day.date || ''}</div>
       ${isRest ? '<span class="rest-label">Riposo</span>' : badges}
@@ -917,6 +988,44 @@ function selectPiano(id) {
   document.getElementById('detail-panel').innerHTML = '<div class="detail-empty">— clicca su un allenamento per i dettagli —</div>';
 }
 
+async function loadWorkoutLog() {
+  try {
+    const { data, error } = await supabaseClient
+      .from('workout_log')
+      .select('date, workout_key, status, reason');
+    if (error) throw error;
+    workoutLogCache = {};
+    (data || []).forEach(row => {
+      workoutLogCache[`${row.date}:${row.workout_key}`] = { status: row.status, reason: row.reason };
+    });
+  } catch (e) {
+    console.warn('Supabase non configurato o non raggiungibile:', e.message);
+    // App funziona anche senza Supabase (read-only mode)
+  }
+}
+
+async function markAsDone(dateStr, workoutKey, btn) {
+  btn.disabled = true;
+  btn.textContent = '...';
+  try {
+    const { error } = await supabaseClient
+      .from('workout_log')
+      .upsert(
+        { date: dateStr, workout_key: workoutKey, status: 'done' },
+        { onConflict: 'date,workout_key' }
+      );
+    if (error) throw error;
+    workoutLogCache[`${dateStr}:${workoutKey}`] = { status: 'done', reason: null };
+    btn.textContent = '✓ Completato';
+    btn.classList.add('btn-fatto-done');
+  } catch (e) {
+    btn.textContent = '✓ Fatto';
+    btn.disabled = false;
+    console.error('Errore salvataggio:', e);
+    alert('Errore salvataggio. Verifica la configurazione Supabase.');
+  }
+}
+
 /* ── INIT ── */
 async function initApp() {
   try {
@@ -930,6 +1039,7 @@ async function initApp() {
     document.getElementById('cal-grid').innerHTML = '<p style="color:red;padding:20px">Errore caricamento piano. Apri da un server locale (non direttamente dal filesystem).</p>';
     return;
   }
+  await loadWorkoutLog();
   updateCountdown();
   renderWeekTabs();
   renderCalendar();
