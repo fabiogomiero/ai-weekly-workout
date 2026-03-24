@@ -39,3 +39,8 @@ ALTER TABLE workout_log ENABLE ROW LEVEL SECURITY;
 DROP POLICY IF EXISTS "allow_all" ON workout_log;
 CREATE POLICY "allow_all" ON workout_log
   FOR ALL USING (true) WITH CHECK (true);
+
+-- Aggiunta colonna RPE (Rate of Perceived Exertion, scala 1-10)
+-- Esegui questo ALTER se la tabella workout_log è già presente
+ALTER TABLE workout_log
+  ADD COLUMN IF NOT EXISTS rpe INTEGER CHECK (rpe BETWEEN 1 AND 10);
