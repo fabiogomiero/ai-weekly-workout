@@ -28,7 +28,7 @@ function weeksForPiano(pid) {
   return WEEKS.filter(w => w.piano === pid);
 }
 
-let currentPiano = PIANI.find(p => p.current)?.id || PIANI[0].id;
+let currentPiano = null;
 let currentWeekIdx = 0;
 let currentExCat = 'forza';
 
@@ -248,6 +248,7 @@ async function initApp() {
     PIANI = plan.piani;
     DETAILS = plan.details;
     WEEKS = plan.weeks;
+    currentPiano = PIANI.find(p => p.current)?.id || PIANI[0]?.id;
   } catch (e) {
     console.error('Errore caricamento piano:', e);
     document.getElementById('cal-grid').innerHTML = '<p style="color:red;padding:20px">Errore caricamento piano. Apri da un server locale (non direttamente dal filesystem).</p>';
