@@ -1,5 +1,5 @@
 [phases.setup]
-nixPkgs = ["python3Full"]
+aptPkgs = ["python3", "python3-pip"]
 
 [phases.install]
 cmds = ["pip3 install -r bot/requirements.txt"]
