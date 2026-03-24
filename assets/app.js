@@ -1,7 +1,7 @@
 // ── SUPABASE CONFIG ──
 // Usa la anon key (non la service role key) — ok per uso personale con RLS
-const SUPABASE_URL = 'https://YOUR_PROJECT.supabase.co';  // sostituisci dopo setup Supabase
-const SUPABASE_ANON_KEY = 'eyJ...';                        // sostituisci dopo setup Supabase
+const SUPABASE_URL = '__SUPABASE_URL__';
+const SUPABASE_ANON_KEY = '__SUPABASE_ANON_KEY__';
 const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 // Map: "YYYY-MM-DD:workout_key" → { status, reason }

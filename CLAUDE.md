@@ -34,9 +34,15 @@ Piano di allenamento settimanale per la gara 10km del 26 Aprile 2026.
 - `SUPABASE_KEY` — service role key Supabase (bot)
 - `ANTHROPIC_API_KEY` — API key Anthropic
 
-## Variabili d'ambiente HTML (costanti JS in cima al file)
-- `SUPABASE_URL` — stessa URL del bot
-- `SUPABASE_ANON_KEY` — anon key Supabase (visibile nel sorgente, accettabile per uso personale con RLS)
+## Variabili d'ambiente HTML (iniettate da GitHub Actions)
+`assets/app.js` contiene placeholder `__SUPABASE_URL__` e `__SUPABASE_ANON_KEY__` che vengono sostituiti dal workflow `.github/workflows/deploy.yml` prima del deploy su `gh-pages`.
+
+## Sviluppo locale (con Supabase configurato)
+Dopo aver clonato il repo, `assets/app.js` ha i placeholder.
+Per sviluppo locale:
+1. Sostituisci manualmente `__SUPABASE_URL__` e `__SUPABASE_ANON_KEY__` in `assets/app.js` con i valori reali
+2. Esegui `git update-index --skip-worktree assets/app.js` per evitare commit accidentali
+3. NON fare commit di `assets/app.js` con le chiavi reali — il deploy avviene via GitHub Actions
 
 ## Setup Supabase (prima esecuzione)
 1. Crea progetto su supabase.com
