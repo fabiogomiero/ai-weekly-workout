@@ -594,6 +594,45 @@ h1 em {
   border-color: var(--climb);
   color: var(--climb);
 }
+/* ── RPE SELECTOR ── */
+.rpe-picker {
+  margin-top: 6px;
+}
+.rpe-legend {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.6rem;
+  color: var(--txt2);
+  font-family: var(--mono);
+  margin-bottom: 3px;
+  opacity: 0.7;
+}
+.rpe-buttons {
+  display: flex;
+  gap: 3px;
+}
+.rpe-btn {
+  padding: 2px 5px;
+  font-size: 0.65rem;
+  font-family: var(--mono);
+  background: transparent;
+  border: 1px solid var(--line2);
+  color: var(--txt2);
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.rpe-btn:hover {
+  border-color: var(--run);
+  color: var(--run);
+}
+.rpe-value {
+  display: block;
+  margin-top: 4px;
+  font-size: 0.65rem;
+  font-family: var(--mono);
+  color: var(--txt2);
+}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
@@ -907,7 +946,9 @@ function renderCalendar() {
       let fatoBtn = '';
       if (day.isoDate && !isRest) {
         if (isDone) {
-          fatoBtn = `<button class="btn-fatto btn-fatto-done" disabled>✓ Completato</button>`;
+          const rpe = logEntry?.rpe;
+          const rpeDisplay = rpe ? `<span class="rpe-value">RPE ${rpe}/10</span>` : '';
+          fatoBtn = `<button class="btn-fatto btn-fatto-done" disabled>✓ Completato</button>${rpeDisplay}`;
         } else if (isSkipped) {
           fatoBtn = `<button class="btn-fatto btn-fatto-skipped" onclick="markAsDone('${day.isoDate}','${b.key}',this)">↩ Recuperato</button>`;
         } else {
@@ -992,11 +1033,11 @@ async function loadWorkoutLog() {
   try {
     const { data, error } = await supabaseClient
       .from('workout_log')
-      .select('date, workout_key, status, reason');
+      .select('date, workout_key, status, reason, rpe');
     if (error) throw error;
     workoutLogCache = {};
     (data || []).forEach(row => {
-      workoutLogCache[`${row.date}:${row.workout_key}`] = { status: row.status, reason: row.reason };
+      workoutLogCache[`${row.date}:${row.workout_key}`] = { status: row.status, reason: row.reason, rpe: row.rpe };
     });
   } catch (e) {
     console.warn('Supabase non configurato o non raggiungibile:', e.message);
@@ -1018,11 +1059,36 @@ async function markAsDone(dateStr, workoutKey, btn) {
     workoutLogCache[`${dateStr}:${workoutKey}`] = { status: 'done', reason: null };
     btn.textContent = '✓ Completato';
     btn.classList.add('btn-fatto-done');
+    // Mostra selettore RPE dopo il pulsante
+    const rpeContainer = document.createElement('div');
+    rpeContainer.className = 'rpe-picker';
+    rpeContainer.innerHTML =
+      '<div class="rpe-legend"><span>1 facile</span><span>10 difficile</span></div>' +
+      '<div class="rpe-buttons">' +
+      Array.from({length: 10}, (_, i) => i + 1)
+        .map(n => `<button class="rpe-btn" onclick="saveRpe('${dateStr}','${workoutKey}',${n},this.closest('.rpe-picker'))">${n}</button>`)
+        .join('') +
+      '</div>';
+    btn.parentElement.appendChild(rpeContainer);
   } catch (e) {
     btn.textContent = '✓ Fatto';
     btn.disabled = false;
     console.error('Errore salvataggio:', e);
     alert('Errore salvataggio. Verifica la configurazione Supabase.');
+  }
+}
+
+async function saveRpe(dateStr, workoutKey, rpe, container) {
+  try {
+    await supabaseClient
+      .from('workout_log')
+      .update({ rpe })
+      .eq('date', dateStr)
+      .eq('workout_key', workoutKey);
+    workoutLogCache[`${dateStr}:${workoutKey}`].rpe = rpe;
+    container.innerHTML = `<span class="rpe-value">RPE ${rpe}/10</span>`;
+  } catch (e) {
+    console.error('Errore salvataggio RPE:', e);
   }
 }
 
