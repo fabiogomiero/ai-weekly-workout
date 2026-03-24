@@ -37,4 +37,4 @@ def test_fmt_workout_without_body():
 def test_fmt_workout_body_with_br():
     w = {'title': 'Mobilità', 'body': 'Riga 1<br>Riga 2'}
     result = fmt_workout(w)
-    assert '• Mobilità\n  _Riga 1\nRiga 2_' == result
+    assert result == '• Mobilità\n  _Riga 1_\n  _Riga 2_'

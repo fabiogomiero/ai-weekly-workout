@@ -45,7 +45,10 @@ def strip_html(html: str) -> str:
 def fmt_workout(w: dict) -> str:
     """Formatta un workout per il messaggio Telegram: titolo + body opzionale."""
     body = strip_html(w.get('body', ''))
-    return f"• {w['title']}" + (f"\n  _{body}_" if body else "")
+    if not body:
+        return f"• {w['title']}"
+    lines = [f"  _{line}_" for line in body.split('\n') if line]
+    return f"• {w['title']}\n" + '\n'.join(lines)
 
 
 # ── EVENING CHECK (22:00) ──────────────────────────────────────────────────
