@@ -179,7 +179,7 @@ async def morning_check(context: ContextTypes.DEFAULT_TYPE):
             context_line = f"⚠️ Ieri hai saltato: _{skipped_names}_ ({reasons})\n"
         else:
             rpe_summary = ', '.join(f"{w['descrizione']} RPE {w['rpe']}" for w in done_with_rpe if w['rpe'] >= 8)
-            context_line = f"📊 Ieri RPE alto: _{rpe_summary}_\n"
+            context_line = f"📊 Ieri RPE alto: _{rpe_summary}_\n" if rpe_summary else "📊 Ieri carico elevato percepito.\n"
 
         if today_modified and today_override:
             today_txt = f"💪 *Oggi (adattato):* {today_override}"
