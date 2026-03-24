@@ -42,6 +42,12 @@ def strip_html(html: str) -> str:
     return text
 
 
+def fmt_workout(w: dict) -> str:
+    """Formatta un workout per il messaggio Telegram: titolo + body opzionale."""
+    body = strip_html(w.get('body', ''))
+    return f"• {w['title']}" + (f"\n  _{body}_" if body else "")
+
+
 # ── EVENING CHECK (22:00) ──────────────────────────────────────────────────
 
 async def evening_check(context: ContextTypes.DEFAULT_TYPE):
@@ -104,7 +110,7 @@ async def morning_check(context: ContextTypes.DEFAULT_TYPE):
     if is_rest_day(today, plan):
         today_txt = "🛌 Oggi è giorno di riposo. Recupera bene!"
     else:
-        today_txt = "💪 *Oggi:*\n" + '\n'.join(f"• {w['title']}" for w in today_workouts)
+        today_txt = "💪 *Oggi:*\n" + '\n'.join(fmt_workout(w) for w in today_workouts)
 
     # Controlla ieri
     if is_rest_day(yesterday, plan):
