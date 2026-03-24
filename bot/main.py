@@ -105,11 +105,14 @@ async def morning_check(context: ContextTypes.DEFAULT_TYPE):
 
     try:
         sb = get_supabase()
-        yesterday_logs = sb.table('workout_log').select('workout_key,status,reason').eq('date', yesterday.isoformat()).execute()
+        yesterday_logs = sb.table('workout_log').select('workout_key,status,reason,rpe').eq('date', yesterday.isoformat()).execute()
         skipped = [r for r in (yesterday_logs.data or []) if r.get('status') == 'skipped']
 
-        if not skipped:
-            # Nessun workout saltato (o nessuna risposta = beneficio del dubbio)
+        # Workout completati con RPE alto
+        high_rpe_rows = [r for r in (yesterday_logs.data or []) if r.get('status') == 'done' and (r.get('rpe') or 0) >= 8]
+
+        if not skipped and not high_rpe_rows:
+            # Nessun workout saltato né RPE alto (o nessuna risposta = beneficio del dubbio)
             await context.bot.send_message(chat_id=CHAT_ID, text=f"☀️ Buongiorno!\n\n{today_txt}", parse_mode='Markdown')
             return
 
@@ -127,10 +130,23 @@ async def morning_check(context: ContextTypes.DEFAULT_TYPE):
                     'reason': s.get('reason', 'no_time'),
                 })
 
-        if not skipped_with_detail:
+        if not skipped_with_detail and not high_rpe_rows:
             # Skipped keys no longer in plan (plan was updated) — treat as done
             await context.bot.send_message(chat_id=CHAT_ID, text=f"☀️ Buongiorno!\n\n{today_txt}", parse_mode='Markdown')
             return
+
+        # Workout completati ieri con RPE
+        yesterday_all_workouts = get_workouts_for_date(yesterday, plan)
+        done_with_rpe = []
+        for r in (yesterday_logs.data or []):
+            if r.get('status') == 'done' and r.get('rpe'):
+                detail = next((w for w in yesterday_all_workouts if w['key'] == r['workout_key']), None)
+                if detail:
+                    done_with_rpe.append({
+                        'tipo': detail['cls'].replace('b-', '').capitalize(),
+                        'descrizione': detail['title'],
+                        'rpe': r['rpe'],
+                    })
 
         week_num = 0
         for i, w in enumerate(plan['weeks']):
@@ -147,6 +163,8 @@ async def morning_check(context: ContextTypes.DEFAULT_TYPE):
             'days_to_race': (date.fromisoformat(RACE_DATE_STR) - today).days,
             'primary_goal': 'Gara 10km 26 Aprile 2026',
             'secondary_goal': 'Forza gambe (Resistenza Verticale) + arrampicata',
+            'done_workouts': done_with_rpe,
+            'high_rpe_trigger': bool(high_rpe_rows),
         }
 
         adaptation, today_modified, today_override = propose_adaptation(claude_context, ANTHROPIC_API_KEY)
@@ -155,15 +173,20 @@ async def morning_check(context: ContextTypes.DEFAULT_TYPE):
         for s in skipped:
             sb.table('workout_log').update({'adapted_notes': adaptation}).eq('date', yesterday.isoformat()).eq('workout_key', s['workout_key']).execute()
 
-        skipped_names = ', '.join(s['descrizione'] for s in skipped_with_detail)
-        reasons = ', '.join('stanchezza' if s['reason'] == 'tired' else 'mancanza di tempo' for s in skipped_with_detail)
+        if skipped_with_detail:
+            skipped_names = ', '.join(s['descrizione'] for s in skipped_with_detail)
+            reasons = ', '.join('stanchezza' if s['reason'] == 'tired' else 'mancanza di tempo' for s in skipped_with_detail)
+            context_line = f"⚠️ Ieri hai saltato: _{skipped_names}_ ({reasons})\n"
+        else:
+            rpe_summary = ', '.join(f"{w['descrizione']} RPE {w['rpe']}" for w in done_with_rpe if w['rpe'] >= 8)
+            context_line = f"📊 Ieri RPE alto: _{rpe_summary}_\n"
 
         if today_modified and today_override:
             today_txt = f"💪 *Oggi (adattato):* {today_override}"
 
         msg = (
             f"☀️ Buongiorno!\n\n"
-            f"⚠️ Ieri hai saltato: _{skipped_names}_ ({reasons})\n"
+            f"{context_line}"
             f"📋 Claude propone: {adaptation}\n\n"
             f"{today_txt}"
         )
@@ -186,7 +209,14 @@ async def handle_done(update: Update, context: ContextTypes.DEFAULT_TYPE):
         on_conflict='date,workout_key'
     ).execute()
 
-    await query.edit_message_text(f"✅ Ottimo! Workout segnato come completato. 💪")
+    rpe_keyboard = InlineKeyboardMarkup([
+        [InlineKeyboardButton(str(i), callback_data=f"rpe:{i}:{date_str}:{workout_key}") for i in range(1, 6)],
+        [InlineKeyboardButton(str(i), callback_data=f"rpe:{i}:{date_str}:{workout_key}") for i in range(6, 11)],
+    ])
+    await query.edit_message_text(
+        "✅ Fatto! Come è andato? (RPE 1=facile … 10=massimo sforzo)",
+        reply_markup=rpe_keyboard,
+    )
 
 
 async def handle_no(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -220,6 +250,18 @@ async def handle_reason(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await query.edit_message_text(msg)
 
 
+async def handle_rpe(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    query = update.callback_query
+    await query.answer()
+    _, rpe_str, date_str, workout_key = query.data.split(':', 3)
+    rpe = int(rpe_str)
+
+    sb = get_supabase()
+    sb.table('workout_log').update({'rpe': rpe}).eq('date', date_str).eq('workout_key', workout_key).execute()
+
+    await query.edit_message_text(f"✅ Fatto — RPE {rpe}/10 📊")
+
+
 # ── COMANDI DI TEST ────────────────────────────────────────────────────────
 
 async def cmd_test_evening(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -241,6 +283,7 @@ def main():
     app.add_handler(CallbackQueryHandler(handle_done, pattern=r'^done:'))
     app.add_handler(CallbackQueryHandler(handle_no, pattern=r'^no:'))
     app.add_handler(CallbackQueryHandler(handle_reason, pattern=r'^reason:'))
+    app.add_handler(CallbackQueryHandler(handle_rpe, pattern=r'^rpe:'))
 
     # Comandi di test
     app.add_handler(CommandHandler('test_evening', cmd_test_evening))
