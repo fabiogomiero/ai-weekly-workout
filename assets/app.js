@@ -294,8 +294,23 @@ async function initApp() {
     // EX_CATS e ESERCIZI restano vuoti: il tab esercizi non mostra nulla ma l'app non crasha
   }
   updateCountdown();
+
+  // Auto-select la settimana che contiene oggi
+  const todayStr = getTodayStr();
+  const weeks = weeksForPiano(currentPiano);
+  const todayWeekIdx = weeks.findIndex(w => w.days?.some(d => d.isoDate === todayStr));
+  if (todayWeekIdx >= 0) {
+    currentWeekIdx = todayWeekIdx;
+  }
+
   renderWeekTabs();
   renderCalendar();
+
+  // Scroll all'anchor se presente nel URL (es. #2026-03-24 dal link Telegram)
+  if (location.hash) {
+    const el = document.querySelector(location.hash);
+    el?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
 }
 
 document.addEventListener('DOMContentLoaded', initApp);
