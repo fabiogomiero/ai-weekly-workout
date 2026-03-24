@@ -7,7 +7,7 @@ Piano di allenamento settimanale per la gara 10km del 26 Aprile 2026.
 - **Secondario:** Forza e resistenza gambe (metodo Resistenza Verticale) + arrampicata boulder e indoor
 
 ## Stack
-- `piano_allenamento.html` — UI single-page (GitHub Pages: https://USERNAME.github.io/weekly-workout/)
+- `index.html` — UI single-page (GitHub Pages: https://USERNAME.github.io/weekly-workout/)
 - `data/plan_apr2026.json` — Piano completo: WEEKS, DETAILS, PIANI (fonte di verità condivisa con il bot)
 - `bot/` — Telegram bot Python (Railway) con Claude API per adattamento piano
 - Supabase — Persistenza stato workout completati
@@ -21,8 +21,8 @@ Piano di allenamento settimanale per la gara 10km del 26 Aprile 2026.
 - Il timezone è sempre `ZoneInfo("Europe/Rome")` (gestisce CET/CEST automaticamente)
 
 ## File critici
-- `piano_allenamento.html` — UI + Supabase integration (i dati ora vengono da `data/plan_apr2026.json` via fetch)
-- `piano_allenamento.html` — funzione `renderCalendar()` — logica rendering calendario con stato done/skipped
+- `index.html` — UI + Supabase integration (i dati ora vengono da `data/plan_apr2026.json` via fetch)
+- `index.html` — funzione `renderCalendar()` — logica rendering calendario con stato done/skipped
 - `bot/main.py` — entry point bot + scheduler (22:00 check serale, 07:00 check mattutino)
 - `bot/claude_adapter.py` — chiamata Claude API con fallback su errore
 - `bot/schedule_logic.py` — determina se oggi è giorno di allenamento e quale workout
