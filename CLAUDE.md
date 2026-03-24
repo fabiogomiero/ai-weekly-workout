@@ -7,7 +7,7 @@ Piano di allenamento settimanale per la gara 10km del 26 Aprile 2026.
 - **Secondario:** Forza e resistenza gambe (metodo Resistenza Verticale) + arrampicata boulder e indoor
 
 ## Stack
-- `piano_allenamento.html` — UI single-page (Vanilla JS, dark theme, no framework)
+- `piano_allenamento.html` — UI single-page (GitHub Pages: https://USERNAME.github.io/weekly-workout/)
 - `data/plan_apr2026.json` — Piano completo: WEEKS, DETAILS, PIANI (fonte di verità condivisa con il bot)
 - `bot/` — Telegram bot Python (Railway) con Claude API per adattamento piano
 - Supabase — Persistenza stato workout completati
@@ -48,3 +48,9 @@ Piano di allenamento settimanale per la gara 10km del 26 Aprile 2026.
 2. Connetti Railway a repo GitHub
 3. Imposta env vars in Railway dashboard
 4. Per ottenere CHAT_ID: manda /start al bot → `curl "https://api.telegram.org/bot{TOKEN}/getUpdates"` → leggi `message.from.id`
+
+## RPE (Rate of Perceived Exertion)
+- Scala 1-10: 1=facile, 10=massimo sforzo
+- Inserito via Telegram (dopo ✅ Sì al check serale) o via HTML (selettore dopo "Fatto")
+- Claude usa RPE come contesto nel check mattutino
+- RPE ≥ 8 triggerà Claude anche se non ci sono workout saltati
