@@ -14,3 +14,4 @@ ANTHROPIC_API_KEY = os.environ['ANTHROPIC_API_KEY']
 # Costanti piano
 RACE_DATE_STR = '2026-04-26'
 PLAN_JSON_PATH = Path(__file__).parent.parent / 'data' / 'plan_apr2026.json'
+PAGE_URL = 'https://fabiogomiero.github.io/ai-weekly-workout/'

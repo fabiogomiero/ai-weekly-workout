@@ -10,7 +10,7 @@ from telegram.ext import (
 
 from config import (
     TELEGRAM_TOKEN, CHAT_ID, SUPABASE_URL, SUPABASE_KEY,
-    ANTHROPIC_API_KEY, PLAN_JSON_PATH, RACE_DATE_STR
+    ANTHROPIC_API_KEY, PLAN_JSON_PATH, RACE_DATE_STR, PAGE_URL
 )
 from schedule_logic import get_workouts_for_date, is_rest_day, get_week_context, load_plan
 from claude_adapter import propose_adaptation
@@ -100,7 +100,7 @@ async def morning_check(context: ContextTypes.DEFAULT_TYPE):
     # Controlla ieri
     if is_rest_day(yesterday, plan):
         # Nessun controllo per giorni di riposo
-        await context.bot.send_message(chat_id=CHAT_ID, text=f"☀️ Buongiorno!\n\n{today_txt}", parse_mode='Markdown')
+        await context.bot.send_message(chat_id=CHAT_ID, text=f"☀️ Buongiorno!\n\n{today_txt}\n\n🔗 {PAGE_URL}", parse_mode='Markdown')
         return
 
     try:
@@ -113,7 +113,7 @@ async def morning_check(context: ContextTypes.DEFAULT_TYPE):
 
         if not skipped and not high_rpe_rows:
             # Nessun workout saltato né RPE alto (o nessuna risposta = beneficio del dubbio)
-            await context.bot.send_message(chat_id=CHAT_ID, text=f"☀️ Buongiorno!\n\n{today_txt}", parse_mode='Markdown')
+            await context.bot.send_message(chat_id=CHAT_ID, text=f"☀️ Buongiorno!\n\n{today_txt}\n\n🔗 {PAGE_URL}", parse_mode='Markdown')
             return
 
         # Workout saltati ieri → chiedi a Claude
@@ -132,7 +132,7 @@ async def morning_check(context: ContextTypes.DEFAULT_TYPE):
 
         if not skipped_with_detail and not high_rpe_rows:
             # Skipped keys no longer in plan (plan was updated) — treat as done
-            await context.bot.send_message(chat_id=CHAT_ID, text=f"☀️ Buongiorno!\n\n{today_txt}", parse_mode='Markdown')
+            await context.bot.send_message(chat_id=CHAT_ID, text=f"☀️ Buongiorno!\n\n{today_txt}\n\n🔗 {PAGE_URL}", parse_mode='Markdown')
             return
 
         # Workout completati ieri con RPE
@@ -188,7 +188,8 @@ async def morning_check(context: ContextTypes.DEFAULT_TYPE):
             f"☀️ Buongiorno!\n\n"
             f"{context_line}"
             f"📋 Claude propone: {adaptation}\n\n"
-            f"{today_txt}"
+            f"{today_txt}\n\n"
+            f"🔗 {PAGE_URL}"
         )
         await context.bot.send_message(chat_id=CHAT_ID, text=msg, parse_mode='Markdown')
     except Exception as e:
