@@ -60,3 +60,24 @@ def test_propose_adaptation_api_error_fallback():
         adaptation, modified, override = propose_adaptation(SAMPLE_CONTEXT, api_key='fake')
     assert "piano previsto" in adaptation.lower()
     assert modified is False
+
+
+SAMPLE_CONTEXT_HIGH_RPE = {
+    'skipped_workouts': [],
+    'done_workouts': [{'tipo': 'Corsa', 'descrizione': 'Corsa Lv7', 'rpe': 9}],
+    'high_rpe_trigger': True,
+    'today_workouts': [{'tipo': 'Forza', 'descrizione': 'Forza gambe base'}],
+    'week_number': 2,
+    'week_focus': 'Lv 7 running',
+    'days_to_race': 20,
+    'primary_goal': 'Gara 10km 26 Aprile 2026',
+    'secondary_goal': 'Forza gambe (Resistenza Verticale) + arrampicata',
+}
+
+def test_propose_adaptation_high_rpe_api_error_fallback():
+    """High-RPE trigger deve anche restituire FALLBACK su errore API."""
+    with patch('claude_adapter.anthropic.Anthropic') as mock_cls:
+        mock_cls.return_value.messages.create.side_effect = Exception("fail")
+        adaptation, modified, override = propose_adaptation(SAMPLE_CONTEXT_HIGH_RPE, api_key='fake')
+    assert "piano previsto" in adaptation.lower()
+    assert modified is False

@@ -8,7 +8,10 @@ Obiettivo secondario: aumentare forza e resistenza gambe (metodo Resistenza Vert
 Quando proponi adattamenti, prioritizza sempre il recupero per la gara.
 Se il motivo è stanchezza fisica, proponi riposo attivo o riduzione del volume.
 Se il motivo è mancanza di tempo, proponi come recuperare il workout saltato.
-Rispondi SOLO in italiano. Rispondi SOLO con JSON valido nel formato specificato. Nessun testo fuori dal JSON."""
+Rispondi SOLO in italiano. Rispondi SOLO con JSON valido nel formato specificato. Nessun testo fuori dal JSON.
+RPE (Rate of Perceived Exertion) 1-10: scala di sforzo percepito.
+Se l'atleta ha completato gli allenamenti con RPE ≥ 8, prioritizza il recupero attivo nel giorno successivo.
+Se RPE ≤ 4, l'allenamento era sottotono: puoi suggerire di mantenere o aumentare leggermente il carico."""
 
 FALLBACK = ("Continua con il piano previsto. 💪", False, "")
 
@@ -49,16 +52,33 @@ def propose_adaptation(
         f'- {w["tipo"]}: {w["descrizione"]}' for w in context['today_workouts']
     )
 
+    done_workouts = context.get('done_workouts', [])
+    high_rpe_trigger = context.get('high_rpe_trigger', False)
+
+    if done_workouts:
+        done_lines = '\n'.join(
+            f'- {w["tipo"]}: {w["descrizione"]} — RPE {w["rpe"]}/10'
+            for w in done_workouts
+        )
+        done_section = f"\nIeri l'atleta ha completato:\n{done_lines}\n"
+    else:
+        done_section = ''
+
+    if high_rpe_trigger and not context['skipped_workouts']:
+        trigger_line = "L'atleta ha completato tutti gli allenamenti ma con RPE elevato. Proponi un adattamento per recupero."
+    else:
+        trigger_line = 'Proponi un adattamento considerando il motivo del salto.'
+
     user_prompt = f"""Ieri l'atleta ha saltato:
 {skipped_lines}
-
+{done_section}
 Settimana corrente: Settimana {context['week_number']} — {context['week_focus']}
 Giorni alla gara 10km: {days_to_race}
 
 Allenamento previsto oggi:
 {today_lines}
 
-Proponi un adattamento considerando il motivo del salto.
+{trigger_line}
 Formato risposta JSON esatto:
 {{"adaptation": "...", "today_modified": false, "today_override": ""}}"""
 
