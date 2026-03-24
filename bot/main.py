@@ -1,5 +1,6 @@
 import json
 import logging
+import re
 from datetime import date, datetime, time, timedelta
 from zoneinfo import ZoneInfo
 
@@ -31,6 +32,23 @@ def get_supabase():
 
 def load_plan_data() -> dict:
     return load_plan(PLAN_JSON_PATH)
+
+
+def strip_html(html: str) -> str:
+    """Rimuove tag HTML e sanifica caratteri Markdown V1."""
+    text = re.sub(r'<br\s*/?>', '\n', html)
+    text = re.sub(r'<[^>]+>', '', text).strip()
+    text = text.replace('_', '\\_').replace('*', '\\*')
+    return text
+
+
+def fmt_workout(w: dict) -> str:
+    """Formatta un workout per il messaggio Telegram: titolo + body opzionale."""
+    body = strip_html(w.get('body', ''))
+    if not body:
+        return f"• {w['title']}"
+    lines = [f"  _{line}_" for line in body.split('\n') if line]
+    return f"• {w['title']}\n" + '\n'.join(lines)
 
 
 # ── EVENING CHECK (22:00) ──────────────────────────────────────────────────
@@ -95,12 +113,12 @@ async def morning_check(context: ContextTypes.DEFAULT_TYPE):
     if is_rest_day(today, plan):
         today_txt = "🛌 Oggi è giorno di riposo. Recupera bene!"
     else:
-        today_txt = "💪 *Oggi:*\n" + '\n'.join(f"• {w['title']}" for w in today_workouts)
+        today_txt = "💪 *Oggi:*\n" + '\n'.join(fmt_workout(w) for w in today_workouts)
 
     # Controlla ieri
     if is_rest_day(yesterday, plan):
         # Nessun controllo per giorni di riposo
-        await context.bot.send_message(chat_id=CHAT_ID, text=f"☀️ Buongiorno!\n\n{today_txt}\n\n🔗 {PAGE_URL}", parse_mode='Markdown')
+        await context.bot.send_message(chat_id=CHAT_ID, text=f"☀️ Buongiorno!\n\n{today_txt}\n\n🔗 {PAGE_URL}#{today.isoformat()}", parse_mode='Markdown')
         return
 
     try:
@@ -113,7 +131,7 @@ async def morning_check(context: ContextTypes.DEFAULT_TYPE):
 
         if not skipped and not high_rpe_rows:
             # Nessun workout saltato né RPE alto (o nessuna risposta = beneficio del dubbio)
-            await context.bot.send_message(chat_id=CHAT_ID, text=f"☀️ Buongiorno!\n\n{today_txt}\n\n🔗 {PAGE_URL}", parse_mode='Markdown')
+            await context.bot.send_message(chat_id=CHAT_ID, text=f"☀️ Buongiorno!\n\n{today_txt}\n\n🔗 {PAGE_URL}#{today.isoformat()}", parse_mode='Markdown')
             return
 
         # Workout saltati ieri → chiedi a Claude
@@ -132,7 +150,7 @@ async def morning_check(context: ContextTypes.DEFAULT_TYPE):
 
         if not skipped_with_detail and not high_rpe_rows:
             # Skipped keys no longer in plan (plan was updated) — treat as done
-            await context.bot.send_message(chat_id=CHAT_ID, text=f"☀️ Buongiorno!\n\n{today_txt}\n\n🔗 {PAGE_URL}", parse_mode='Markdown')
+            await context.bot.send_message(chat_id=CHAT_ID, text=f"☀️ Buongiorno!\n\n{today_txt}\n\n🔗 {PAGE_URL}#{today.isoformat()}", parse_mode='Markdown')
             return
 
         # Workout completati ieri con RPE
@@ -189,7 +207,7 @@ async def morning_check(context: ContextTypes.DEFAULT_TYPE):
             f"{context_line}"
             f"📋 Claude propone: {adaptation}\n\n"
             f"{today_txt}\n\n"
-            f"🔗 {PAGE_URL}"
+            f"🔗 {PAGE_URL}#{today.isoformat()}"
         )
         await context.bot.send_message(chat_id=CHAT_ID, text=msg, parse_mode='Markdown')
     except Exception as e:

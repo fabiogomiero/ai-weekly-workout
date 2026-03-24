@@ -32,6 +32,9 @@ let currentPiano = null;
 let currentWeekIdx = 0;
 let currentExCat = 'forza';
 
+/** Restituisce 'YYYY-MM-DD' nella timezone locale del browser */
+const getTodayStr = () => new Date().toLocaleDateString('sv-SE');
+
 /* ── Countdown ── */
 function updateCountdown() {
   const gara = new Date('2026-04-26');
@@ -79,7 +82,8 @@ function renderCalendar() {
 
   grid.innerHTML = w.days.map(day => {
     const isRest = !day.badges || day.badges.length === 0;
-    const cls = ['cal-day', isRest ? 'rest' : '', day.today ? 'today' : '', day.alt ? 'alt' : ''].filter(Boolean).join(' ');
+    const isToday = day.isoDate === getTodayStr();
+    const cls = ['cal-day', isRest ? 'rest' : '', isToday ? 'today' : '', day.alt ? 'alt' : ''].filter(Boolean).join(' ');
 
     const badges = (day.badges || []).map(b => {
       const logKey = `${day.isoDate || ''}:${b.key}`;
@@ -107,7 +111,7 @@ function renderCalendar() {
       return `<span class="badge ${b.cls}${statusCls}" ${onclick}>${b.txt}</span>${fatoBtn}`;
     }).join('');
 
-    return `<div class="${cls}">
+    return `<div id="${day.isoDate || ''}" class="${cls}">
       <div class="day-date">${day.date || ''}</div>
       ${isRest ? '<span class="rest-label">Riposo</span>' : badges}
     </div>`;
@@ -290,8 +294,23 @@ async function initApp() {
     // EX_CATS e ESERCIZI restano vuoti: il tab esercizi non mostra nulla ma l'app non crasha
   }
   updateCountdown();
+
+  // Auto-select la settimana che contiene oggi
+  const todayStr = getTodayStr();
+  const weeks = weeksForPiano(currentPiano);
+  const todayWeekIdx = weeks.findIndex(w => w.days?.some(d => d.isoDate === todayStr));
+  if (todayWeekIdx >= 0) {
+    currentWeekIdx = todayWeekIdx;
+  }
+
   renderWeekTabs();
   renderCalendar();
+
+  // Scroll all'anchor se presente nel URL (es. #2026-03-24 dal link Telegram)
+  if (location.hash) {
+    const el = document.querySelector(location.hash);
+    el?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
 }
 
 document.addEventListener('DOMContentLoaded', initApp);
