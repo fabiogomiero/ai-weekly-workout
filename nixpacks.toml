@@ -1,7 +1,8 @@
-providers = ["python"]
+[phases.setup]
+nixPkgs = ["python3Full"]
 
 [phases.install]
-cmds = ["pip install -r bot/requirements.txt"]
+cmds = ["pip3 install -r bot/requirements.txt"]
 
 [start]
-cmd = "python bot/main.py"
+cmd = "python3 bot/main.py"
