@@ -9,6 +9,8 @@ let workoutLogCache = {};
 
 // PIANI, DETAILS, WEEKS vengono caricati da data/plan_apr2026.json all'avvio
 let PIANI = [], DETAILS = {}, WEEKS = [];
+let EX_CATS = [];
+let ESERCIZI = {};
 
 /* ══════════════════════════════════════════════════════════
    ESERCIZI & VIDEO
@@ -16,85 +18,6 @@ let PIANI = [], DETAILS = {}, WEEKS = [];
 function ytUrl(q) {
   return 'https://www.youtube.com/results?search_query=' + encodeURIComponent(q);
 }
-
-const EX_CATS = [
-  { id: 'forza', label: 'Forza gambe' },
-  { id: 'mob',   label: 'Mobilità' },
-  { id: 'corsa', label: 'Tecnica corsa' },
-];
-
-const ESERCIZI = {
-  forza: [
-    {
-      section: 'Esercizi principali',
-      items: [
-        { title:'Squat corpo libero', muscle:'Quadricipiti · glutei · core', tip:'Piedi larghezza spalle, punte leggermente fuori. Ginocchia seguono le punte. Scendi come su una sedia dietro di te.', yt:'squat corpo libero esecuzione corretta tutorial italiano' },
-        { title:'Squat con pesi (manubri)', muscle:'Quadricipiti · glutei · core', tip:'Manubri ai fianchi o sulle spalle. Stessa meccanica del corpo libero. Tronco eretto, schiena neutra.', yt:'squat con manubri esecuzione corretta tutorial italiano' },
-        { title:'Squat con elastico (intorno alle cosce)', muscle:'Quadricipiti · glutei medi · abduttori', tip:'Mini-band intorno alle cosce. Spingi le ginocchia fuori durante tutto il movimento. Attiva i glutei medi spesso trascurati.', yt:'squat elastico mini band tutorial italiano gambe' },
-        { title:'Affondi alternati', muscle:'Quadricipiti · glutei · femorali', tip:'Passo ampio, ginocchio posteriore sfiora il pavimento. Ginocchio anteriore non supera la punta del piede. Busto eretto.', yt:'affondi alternati esecuzione corretta tutorial italiano' },
-        { title:'Affondi cammino con elastico', muscle:'Quadricipiti · glutei · stabilizzatori', tip:'Elastico intorno alle cosce per attivare i glutei medi. Avanza passo dopo passo mantenendo la tensione laterale.', yt:'affondi camminati elastico tutorial esecuzione italiano' },
-        { title:'Step-up su sedia', muscle:'Quadricipiti · glutei · equilibrio', tip:'Spingi con il tallone del piede sul gradino, non con la punta. Porta la coscia opposta in alto. Fondamentale per la montagna.', yt:'step up sedia esercizio gambe tutorial italiano' },
-        { title:'Step-up con pesi', muscle:'Quadricipiti · glutei · femorali', tip:'Stessa meccanica dello step-up base. I manubri aumentano il carico senza cambiare il gesto. Altezza gradino: coscia parallela al suolo.', yt:'step up manubri gradino tutorial italiano' },
-        { title:'Bulgarian split squat', muscle:'Quadricipiti · glutei · stabilizzatori caviglia', tip:'Piede posteriore su sedia. Scendi verticalmente, non in avanti. L\'esercizio più specifico per la salita in montagna.', yt:'bulgarian split squat tutorial italiano esecuzione corretta' },
-        { title:'Hip hinge / Romanian deadlift', muscle:'Femorali · glutei · erettori schiena', tip:'Busto in avanti con schiena piatta, bacino indietro. Ginocchia si piegano poco. Senti l\'allungamento dei femorali.', yt:'hip hinge deadlift rumeno manubri tutorial italiano' },
-        { title:'RDL monogamba (single-leg deadlift)', muscle:'Femorali · glutei · propriocezione', tip:'Equilibrio su una gamba. Busto avanza, gamba libera sale dietro. Essenziale per prevenire distorsioni in discesa.', yt:'single leg deadlift monogamba tutorial italiano esecuzione' },
-        { title:'Glute bridge', muscle:'Glutei · core · femorali', tip:'Schiena a terra, piedi vicini ai glutei. Spingi i fianchi in alto, spremi i glutei in cima. Tieni 1-2 secondi.', yt:'glute bridge esecuzione corretta tutorial italiano' },
-        { title:'Glute bridge monogamba', muscle:'Glutei · stabilizzatori · core', tip:'Una gamba tesa in aria. Richiede stabilità del bacino. Corregge asimmetrie tra i lati.', yt:'glute bridge monogamba single leg tutorial italiano' },
-        { title:'Glute bridge con elastico', muscle:'Glutei medi · abduttori', tip:'Mini-band sopra le ginocchia. Spingi le ginocchia fuori mentre sali. Attiva i glutei medi (previene il valgismo).', yt:'glute bridge elastico mini band tutorial gambe italiano' },
-        { title:'Wall sit', muscle:'Quadricipiti · resistenza isometrica', tip:'Schiena al muro, cosce parallele al suolo, ginocchia a 90°. Esercizio isometrico: simula l\'affaticamento della discesa prolungata.', yt:'wall sit esercizio isometrico tutorial italiano' },
-        { title:'Calf raise (in piedi)', muscle:'Polpacci (gastrocnemio)', tip:'Sali sulle punte lentamente, scendi lentamente. Su un gradino per maggiore escursione. Fondamentale per corsa e discesa.', yt:'calf raise polpacci tutorial italiano esecuzione gradino' },
-        { title:'Single-leg calf raise', muscle:'Polpacci · stabilità caviglia', tip:'Una gamba sola. Molto più difficile del bilaterale. Inizia appoggiandoti a un muro. Progressione naturale del calf raise.', yt:'single leg calf raise monogamba polpacci tutorial italiano' },
-        { title:'Box jump basso', muscle:'Potenza gambe · reattività', tip:'Gradino basso 20-30 cm. Atterraggio morbido con ginocchia flesse, mai rigido. Solo settimana 3 di picco.', yt:'box jump basso tutorial esecuzione sicura italiano' },
-      ],
-    },
-  ],
-  mob: [
-    {
-      section: 'Mobilità anca e catena posteriore',
-      items: [
-        { title:'World lunge', muscle:'Flessori anca · adduttori · torace', tip:'Affondo lungo, mano a terra lato piede anteriore, poi ruota il busto aprendo il braccio verso il soffitto. Uno dei migliori esercizi di mobilità globale.', yt:'world lunge mobilità anca tutorial italiano' },
-        { title:'90/90 stretch', muscle:'Rotatori interni/esterni anca · piriforme', tip:'Seduto a terra, entrambe le gambe a 90°. Schiena dritta. Inclinati in avanti sulla gamba anteriore. Per chi porta il peso dello zaino.', yt:'90 90 hip stretch mobilità anca tutorial italiano' },
-        { title:'Piriforme stretch', muscle:'Piriforme · rotatori profondi anca', tip:'Sdraiato, porta il piede sul ginocchio opposto (figura 4). Tira la coscia verso il petto. Allevia il dolore al nervo sciatico da affaticamento.', yt:'piriforme stretch sciatico tutorial italiano' },
-        { title:'Ileopsoas stretch', muscle:'Flessori anca · ileopsoas', tip:'Affondo basso, ginocchio posteriore a terra. Spingi il bacino in avanti e in basso. Contrasta l\'accorciamento da corsa e postura seduta.', yt:'ileopsoas stretch flessori anca tutorial italiano' },
-      ],
-    },
-    {
-      section: 'Mobilità caviglia e polpacci',
-      items: [
-        { title:'Pompate caviglia in downward dog', muscle:'Polpacci · tendine di Achille · caviglia', tip:'Posizione cane verso il basso. Alterna il tallone al suolo lentamente su ogni lato. Fondamentale dopo corsa e discesa.', yt:'downward dog pompate polpacci mobilità caviglia tutorial' },
-        { title:'Mobilità caviglia a muro', muscle:'Articolazione tibiotarsica · peronei', tip:'Piede vicino al muro, spingi il ginocchio verso il muro senza alzare il tallone. Aumenta la distanza progressivamente.', yt:'mobilità caviglia muro tutorial ankle mobility italiano' },
-        { title:'Single-leg deadlift leggerissimo (propriocezione)', muscle:'Propriocezione caviglia · femorali · equilibrio', tip:'Peso minimo o corpo libero, lentissimo. L\'obiettivo è allenare i recettori della caviglia per terreno irregolare.', yt:'single leg deadlift propriocezione equilibrio tutorial' },
-      ],
-    },
-    {
-      section: 'Recupero miofasciale',
-      items: [
-        { title:'Foam roller quadricipiti', muscle:'Quadricipiti · fascia lata · IT-band', tip:'Lento, 30-60 secondi per lato. Fermati sui punti dolenti 5-10 secondi. Non rotolare veloce. Dopo ogni corsa lunga.', yt:'foam roller quadricipiti it band tutorial italiano' },
-        { title:'Foam roller polpacci', muscle:'Gastrocnemio · soleo · tendine Achille', tip:'Sovrapponi una gamba sull\'altra per aumentare il peso. Ruota il piede interno/esterno per coprire tutto il muscolo.', yt:'foam roller polpacci massaggio miofasciale tutorial italiano' },
-        { title:'Respirazione diaframmatica (metodo RV)', muscle:'Diaframma · core profondo · sistema nervoso', tip:'Sdraiato, mano sul petto e mano sulla pancia. Inspira gonfiando solo la pancia. Espira lentamente. 5 minuti dopo sessioni intense.', yt:'respirazione diaframmatica tutorial tecnica italiano' },
-      ],
-    },
-    {
-      section: 'Mobilità dinamica (pre-gara / warm-up)',
-      items: [
-        { title:'Leg swing (avanti/dietro e laterali)', muscle:'Flessori/estensori anca · abduttori', tip:'Appoggiati a un muro. Oscillazioni libere e controllate, non forzate. Attiva senza affaticare. Solo dinamica prima della gara.', yt:'leg swing mobilità dinamica anca warm up corsa italiano' },
-        { title:'Intrarotazioni anca', muscle:'Rotatori interni anca · glutei medi', tip:'In piedi, ginocchio in su e ruota verso l\'interno. Lento e controllato. Attiva i muscoli stabilizzatori.', yt:'intrarotazione anca mobilità dinamica warm up italiano' },
-        { title:'A-skip (skip leggero)', muscle:'Flessori anca · polpacci · coordinazione', tip:'Ginocchio in alto, piede di spinta che si estende. Ritmico e leggero. 2×20 metri bastano come attivazione pre-gara.', yt:'skip corsa esercizio riscaldamento a-skip tutorial italiano' },
-      ],
-    },
-  ],
-  corsa: [
-    {
-      section: 'Tecnica e metodo',
-      items: [
-        { title:'Respirazione nasale durante la corsa', muscle:'Tecnica respiratoria · controllo intensità', tip:'Cardine del metodo RV: se non riesci a respirare solo dal naso, stai andando troppo forte. Rallenta finché non la mantieni. Migliora l\'efficienza aerobica.', yt:'respirazione nasale corsa metodo tecnica tutorial italiano' },
-        { title:'Strides (accelerazioni controllate)', muscle:'Fibre veloci · tecnica di passo', tip:'20 secondi a ritmo gara o leggermente più veloce, poi cammina 60 secondi. Nelle settimane di scarico: tengono vive le fibre veloci senza accumulare fatica.', yt:'strides accelerazioni corsa tecnica tutorial italiano' },
-        { title:'Tecnica di corsa in salita', muscle:'Postura · braccia · frequenza passi', tip:'Busto leggermente in avanti, passi più corti, braccia che pompano. Non tentare di mantenere la stessa velocità in piano.', yt:'tecnica corsa salita tutorial italiano montagna' },
-        { title:'Run/walk — strategia gara', muscle:'Gestione fatica · tattica', tip:'8\' corsa + 2\' cammino: strategia valida se non si arriva al Lv 10. Il cammino non è fallimento — è tattica. Spesso si finisce più veloci che correndo tutto di fila al limite.', yt:'run walk strategia gara 10km tutorial italiano' },
-      ],
-    },
-  ],
-};
 
 /* ══════════════════════════════════════════════════════════
    LOGICA APP
@@ -331,6 +254,40 @@ async function initApp() {
     return;
   }
   await loadWorkoutLog();
+  // Carica categorie esercizi
+  try {
+    const { data: cats } = await supabaseClient
+      .from('exercise_categories')
+      .select('id, label')
+      .order('sort_order');
+    EX_CATS = (cats || []).map(c => ({ id: c.id, label: c.label }));
+
+    const { data: exRows } = await supabaseClient
+      .from('exercises')
+      .select('category_id, section_title, title, muscle, tip, yt')
+      .order('category_id')
+      .order('sort_order');
+
+    ESERCIZI = {};
+    (exRows || []).forEach(row => {
+      if (!ESERCIZI[row.category_id]) ESERCIZI[row.category_id] = [];
+      const cat = ESERCIZI[row.category_id];
+      let section = cat.find(s => s.section === row.section_title);
+      if (!section) {
+        section = { section: row.section_title, items: [] };
+        cat.push(section);
+      }
+      section.items.push({
+        title: row.title,
+        muscle: row.muscle,
+        tip: row.tip,
+        yt: row.yt,
+      });
+    });
+  } catch (e) {
+    console.warn('Esercizi non caricati da Supabase:', e.message);
+    // EX_CATS e ESERCIZI restano vuoti: il tab esercizi non mostra nulla ma l'app non crasha
+  }
   updateCountdown();
   renderWeekTabs();
   renderCalendar();
