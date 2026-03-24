@@ -7,7 +7,7 @@ con bot Telegram per check giornalieri e adattamento del piano via Claude AI.
 
 | Componente | Tecnologia | Ruolo |
 |---|---|---|
-| `piano_allenamento.html` | Vanilla JS + Supabase JS SDK | UI calendario + log workout |
+| `index.html` | Vanilla JS + Supabase JS SDK | UI calendario + log workout |
 | `assets/app.js` / `assets/style.css` | JS / CSS | Frontend logic e stili |
 | `data/plan_apr2026.json` | JSON statico | Piano allenamento (fonte di verità) |
 | `bot/` | Python + python-telegram-bot | Bot Telegram + scheduler |
@@ -70,7 +70,7 @@ Per usare la pagina HTML localmente con Supabase reale:
 # Sostituisci __SUPABASE_URL__ e __SUPABASE_ANON_KEY__ in assets/app.js
 git update-index --skip-worktree assets/app.js   # evita commit accidentali
 python -m http.server 8080
-# Apri http://localhost:8080/piano_allenamento.html
+# Apri http://localhost:8080/
 ```
 
 ## Test
