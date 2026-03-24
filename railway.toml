@@ -1,0 +1,8 @@
+[build]
+builder = "nixpacks"
+
+[deploy]
+# startCommand relativo alla root del repo
+startCommand = "python bot/main.py"
+restartPolicyType = "on-failure"
+restartPolicyMaxRetries = 3

@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Piano Allenamento — Gara 10km 26 Aprile 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<div class="shell">
+
+  <header>
+    <div class="header-inner">
+      <div>
+        <div class="header-title">// piano_allenamento.html</div>
+        <h1>Corsa · Forza · <em>Montagna</em></h1>
+      </div>
+      <div class="header-meta">
+        <div>Gara 10 km</div>
+        <div>26 Aprile 2026</div>
+        <div id="days-to-go"></div>
+      </div>
+    </div>
+  </header>
+
+  <nav class="main-nav">
+    <button class="active" onclick="showSection('calendario')">Calendario</button>
+    <button onclick="showSection('esercizi')">Esercizi &amp; Video</button>
+    <button onclick="showSection('storico')">Storico piani</button>
+  </nav>
+
+  <!-- ══════════════════════════════════════════
+       SEZIONE CALENDARIO
+  ══════════════════════════════════════════ -->
+  <div id="section-calendario" class="section active">
+
+    <!-- Barra progressione corsa -->
+    <div class="prog-wrap">
+      <div class="prog-label">Progressione sessioni corsa → 26 apr 2026</div>
+      <div class="prog-rows">
+        <div class="prog-row">
+          <div class="prog-row-lbl">Lv 6</div>
+          <div class="prog-segs">
+            <div class="prog-seg seg-done"  title="Lv6 #1 — fatto"></div>
+            <div class="prog-seg seg-mont"  title="Montagna dom 22/3 — carico equivalente"></div>
+            <div class="prog-seg seg-curr"  title="Lv6 #2 — mer 25 mar"></div>
+            <div class="prog-seg seg-curr"  title="Lv6 #3 — dom 29 o lun 30 mar"></div>
+            <div class="prog-seg seg-empty" style="flex:7"></div>
+          </div>
+        </div>
+        <div class="prog-row">
+          <div class="prog-row-lbl">Lv 7</div>
+          <div class="prog-segs">
+            <div class="prog-seg seg-empty" style="flex:4"></div>
+            <div class="prog-seg seg-s1" title="Lv7 #1 — mar 31 mar"></div>
+            <div class="prog-seg seg-s1" title="Lv7 #2 — ven 3 apr"></div>
+            <div class="prog-seg seg-s1" title="Lv7 #3 — dom 5 apr (o lun 6)"></div>
+            <div class="prog-seg seg-empty" style="flex:4"></div>
+          </div>
+        </div>
+        <div class="prog-row">
+          <div class="prog-row-lbl">Lv 8</div>
+          <div class="prog-segs">
+            <div class="prog-seg seg-empty" style="flex:7"></div>
+            <div class="prog-seg seg-s2" title="Lv8 #1 — mar 8 apr"></div>
+            <div class="prog-seg seg-s2" title="Lv8 #2 — gio 10 apr"></div>
+            <div class="prog-seg seg-empty" style="flex:2"></div>
+          </div>
+        </div>
+        <div class="prog-row">
+          <div class="prog-row-lbl">Lv 9</div>
+          <div class="prog-segs">
+            <div class="prog-seg seg-empty" style="flex:9"></div>
+            <div class="prog-seg seg-s3" title="Lv9 #1 — lun 14 apr"></div>
+            <div class="prog-seg seg-s3" title="Lv9 #2 — gio 17 apr"></div>
+            <div class="prog-seg seg-empty" style="flex:1"></div>
+          </div>
+        </div>
+        <div class="prog-row">
+          <div class="prog-row-lbl">Gara</div>
+          <div class="prog-segs">
+            <div class="prog-seg seg-empty" style="flex:11"></div>
+            <div class="prog-seg seg-gara" title="GARA — dom 26 apr"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Week tabs -->
+    <div class="week-tabs" id="week-tabs"></div>
+    <div class="week-note" id="week-note"></div>
+    <div class="cal-grid" id="cal-grid"></div>
+
+    <!-- Detail panel -->
+    <div class="detail-panel" id="detail-panel">
+      <div class="detail-empty">— clicca su un allenamento per i dettagli —</div>
+    </div>
+
+    <!-- Legend -->
+    <div class="legend">
+      <div class="leg-item"><div class="leg-dot" style="background:var(--run-bg);border:1px solid #0f3d2a"></div>Corsa</div>
+      <div class="leg-item"><div class="leg-dot" style="background:var(--forza-bg);border:1px solid #2a2248"></div>Forza gambe</div>
+      <div class="leg-item"><div class="leg-dot" style="background:var(--climb-bg);border:1px solid #3d2810"></div>Arrampicata</div>
+      <div class="leg-item"><div class="leg-dot" style="background:var(--mob-bg);border:1px solid #0f303a"></div>Mobilità/recupero</div>
+      <div class="leg-item"><div class="leg-dot" style="background:var(--opt-bg);border:1px solid var(--line)"></div>Opzionale / alternativa</div>
+    </div>
+
+  </div><!-- /calendario -->
+
+
+  <!-- ══════════════════════════════════════════
+       SEZIONE ESERCIZI
+  ══════════════════════════════════════════ -->
+  <div id="section-esercizi" class="section">
+    <div class="ex-cat-tabs" id="ex-cat-tabs"></div>
+    <div id="ex-content"></div>
+  </div>
+
+
+  <!-- ══════════════════════════════════════════
+       SEZIONE STORICO
+  ══════════════════════════════════════════ -->
+  <div id="section-storico" class="section">
+    <div class="storico-info">
+      Qui trovi tutti i piani mensili. Per aggiungere un nuovo piano, aggiungi un oggetto nell'array <code>PIANI</code>
+      in fondo allo script, e aggiungi le settimane nell'array <code>WEEKS</code> con la chiave <code>piano</code>
+      corrispondente. I dettagli degli allenamenti vanno nell'oggetto <code>DETAILS</code>.
+    </div>
+    <div class="storico-plan-list" id="storico-list"></div>
+    <div class="howto">
+      <h3>Come aggiornare il piano</h3>
+      <ol>
+        <li>Apri il file HTML in un editor di testo (es. VS Code, Notepad++).</li>
+        <li>Trova l'array <code>PIANI</code> nello script. Aggiungi un nuovo oggetto con <code>id</code>, <code>label</code>, <code>meta</code>, <code>gara</code>.</li>
+        <li>Trova l'array <code>WEEKS</code>. Aggiungi le nuove settimane con <code>piano: 'id_del_tuo_piano'</code>.</li>
+        <li>Aggiungi i dettagli di ogni allenamento nell'oggetto <code>DETAILS</code> con chiavi univoche.</li>
+        <li>Per marcare un allenamento come completato, aggiungi <code>done: true</code> al badge nella settimana.</li>
+        <li>Salva il file e riaprilo nel browser. Nessun server necessario.</li>
+      </ol>
+    </div>
+  </div>
+
+</div><!-- /shell -->
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>
