@@ -1,5 +1,6 @@
 import json
 import logging
+import re
 from datetime import date, datetime, time, timedelta
 from zoneinfo import ZoneInfo
 
@@ -31,6 +32,14 @@ def get_supabase():
 
 def load_plan_data() -> dict:
     return load_plan(PLAN_JSON_PATH)
+
+
+def strip_html(html: str) -> str:
+    """Rimuove tag HTML e sanifica caratteri Markdown V1."""
+    text = re.sub(r'<br\s*/?>', '\n', html)
+    text = re.sub(r'<[^>]+>', '', text).strip()
+    text = text.replace('_', '\\_').replace('*', '\\*')
+    return text
 
 
 # ── EVENING CHECK (22:00) ──────────────────────────────────────────────────
