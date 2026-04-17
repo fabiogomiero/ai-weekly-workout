@@ -45,6 +45,15 @@ CREATE POLICY "allow_all" ON workout_log
 ALTER TABLE workout_log
   ADD COLUMN IF NOT EXISTS rpe INTEGER CHECK (rpe BETWEEN 1 AND 10);
 
+-- Aggiunta status 'altro' e colonna user_note (per nota libera da Telegram o HTML)
+ALTER TABLE workout_log
+  DROP CONSTRAINT IF EXISTS workout_log_status_check;
+ALTER TABLE workout_log
+  ADD CONSTRAINT workout_log_status_check
+  CHECK (status IN ('done', 'skipped', 'altro') OR status IS NULL);
+ALTER TABLE workout_log
+  ADD COLUMN IF NOT EXISTS user_note TEXT;
+
 -- ── EXERCISE CATEGORIES ──────────────────────────────────────────────────────
 CREATE TABLE IF NOT EXISTS exercise_categories (
   id          TEXT PRIMARY KEY,   -- 'forza', 'mob', 'corsa'
