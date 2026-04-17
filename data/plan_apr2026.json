@@ -26,11 +26,11 @@
       "body": "<strong>~25 min · non saltare.</strong> Settimana di picco. Foam roller gambe complete · 5 min respirazione diaframmatica sdraiato (metodo RV) · Ileopsoas stretch se hai tensioni."
     },
     "mob4": {
-      "title": "Mobilità · mar 15 apr",
+      "title": "Mobilità · mer 15 apr",
       "body": "<strong>~25 min.</strong> Come sett. 3. Il Lv 9 stanca le gambe: foam roller, 90/90, respirazione diaframmatica. Non saltare."
     },
     "mob5": {
-      "title": "Mobilità pre-gara · ven 25 apr",
+      "title": "Mobilità pre-gara · sab 25 apr",
       "body": "<strong>~20 min · solo dinamica.</strong> Leg swing avanti/dietro e laterali · Intrarotazioni anca · Mobilità caviglia a muro · A-skip leggero. Niente stretching statico prolungato: abbassa il tono muscolare. Dormi bene."
     },
     "r6b": {
@@ -66,23 +66,23 @@
       "body": "<strong>3' camminando + 35' corsa + 5' cammino + 15' corsa.</strong> Seconda sessione Lv 8. Se va bene, da lunedì 14 sali al Lv 9. Se era dura, aggiungi una terza sabato 12 in sostituzione della forza B."
     },
     "r9a": {
-      "title": "Corsa — Livello 9 (1ª sessione) · lun 14 apr",
+      "title": "Corsa — Livello 9 (1ª sessione) · mar 14 apr",
       "body": "<strong>5' camminando + 45' corsa + 5' cammino + 15' corsa.</strong> ~70 min di movimento. I 45' continui sono la distanza più lunga del piano. Ritmo conversazionale obbligatorio: se non riesci a parlare, stai andando troppo forte."
     },
     "r9b": {
-      "title": "Corsa — Livello 9 (2ª sessione) · gio 17 apr",
+      "title": "Corsa — Livello 9 (2ª sessione) · ven 17 apr",
       "body": "<strong>5' camminando + 45' corsa + 5' cammino + 15' corsa.</strong> Seconda volta sui 45': dovrebbe sentirsi più gestibile della prima. Da qui la fiducia per la gara è costruita."
     },
     "r9c": {
-      "title": "Corsa Lv 9 (3ª, opt.) · sab 19 apr",
+      "title": "Corsa Lv 9 (3ª, opt.) · dom 19 apr",
       "body": "<strong>5' camminando + 45' corsa + 5' cammino + 15' corsa.</strong> Opzionale: se sei stanco sostituisci con 25-30 min easy. Non serve spingere — la gara è tra 7 giorni."
     },
     "rsca": {
-      "title": "Corsa easy · lun 21 apr",
+      "title": "Corsa easy · mar 21 apr",
       "body": "<strong>20 min easy + 4×20s strides.</strong> Ritmo lentissimo. Ultimi 5 min: 4 accelerazioni di 20 secondi a ritmo gara con recupero camminando. Tiene vive le fibre veloci senza accumulare stanchezza."
     },
     "rscb": {
-      "title": "Corsa pre-gara · gio 24 apr",
+      "title": "Corsa pre-gara · ven 24 apr",
       "body": "<strong>15 min easy + 3×20s strides.</strong> Solo schema motorio, niente distanza né ritmo. Stretching dinamico leggero dopo."
     },
     "r10": {
@@ -114,11 +114,11 @@
       "body": "<span class=\"vol-tag up\">↑ PICCO — +1 giro + carico massimo</span><br><strong>4 giri · ~38 min · recupero 45s</strong><br>Bulgarian split squat con pesi 4×10/lato · RDL monogamba 3×10 · Glute bridge con elastico 4×12 · Wall sit 3×50s (+10s)."
     },
     "f4a": {
-      "title": "Forza gambe · ven 18 apr",
+      "title": "Forza gambe · sab 18 apr",
       "body": "<span class=\"vol-tag\">= carico sett. 2 (mantenimento)</span><br><strong>3 giri · ~30 min · recupero 55s</strong><br>Squat con pesi 3×12 · Affondi con elastico 3×10/lato · Step-up con pesi 3×10/lato.<br>Il volume di corsa (Lv 9) è già alto: la forza mantiene senza sovraccaricare."
     },
     "f5": {
-      "title": "Forza gambe scarico · mar 22 apr",
+      "title": "Forza gambe scarico · mer 22 apr",
       "body": "<span class=\"vol-tag\">↓ Scarico pre-gara</span><br><strong>2 giri soli · ~20 min · recupero 60s</strong><br>Squat 2×10 leggero · Affondi 2×8/lato · Step-up 2×8/lato.<br>Zero fatica. Finisci la sessione sentendoti esattamente come prima di iniziarla."
     },
     "c1": {
@@ -134,11 +134,11 @@
       "body": "<strong>~75 min · conservativa.</strong> Settimana più carica del piano: mantenimento, non progressione. Vie facili, boulder tecnico. Se venerdì sei già stanco, salta senza rimpianti."
     },
     "c4": {
-      "title": "Arrampicata · mer 16 apr",
+      "title": "Arrampicata · gio 16 apr",
       "body": "<strong>~75 min · moderata.</strong> Focus su upper body e tecnica. Niente boulder potente sui piedi: il volume di corsa al Lv 9 è già alto."
     },
     "c5": {
-      "title": "Arrampicata facile · mer 23 apr",
+      "title": "Arrampicata facile · gio 23 apr",
       "body": "<strong>45 min max · 4a–4c.</strong> Solo per tenere attivo il sistema nervoso. Se le gambe sono pesanti, salta."
     }
   },
@@ -287,77 +287,77 @@
     },
     {
       "piano": "apr2026",
-      "label": "Sett. 4  14–20 apr",
+      "label": "Sett. 4  14–19 apr",
       "note": "Livello 9 — fino a 3 sessioni. Forza scende a 1 sessione: il volume di corsa è già alto. I 45' continui sono la distanza più lunga del piano: consolidarli qui costruisce la fiducia per la gara.",
-      "cols": 7,
+      "cols": 6,
       "days": [
         {
-          "date": "Lun 14/4",
+          "date": "Mar 14/4",
           "isoDate": "2026-04-14",
           "badges": [{ "cls": "b-run", "txt": "Corsa Lv 9 (1ª)", "key": "r9a" }]
         },
         {
-          "date": "Mar 15/4",
+          "date": "Mer 15/4",
           "isoDate": "2026-04-15",
           "badges": [{ "cls": "b-mob", "txt": "Mobilità", "key": "mob4" }]
         },
         {
-          "date": "Mer 16/4",
+          "date": "Gio 16/4",
           "isoDate": "2026-04-16",
           "badges": [{ "cls": "b-climb", "txt": "Arrampicata", "key": "c4" }]
         },
         {
-          "date": "Gio 17/4",
+          "date": "Ven 17/4",
           "isoDate": "2026-04-17",
           "badges": [{ "cls": "b-run", "txt": "Corsa Lv 9 (2ª)", "key": "r9b" }]
         },
         {
-          "date": "Ven 18/4",
+          "date": "Sab 18/4",
           "isoDate": "2026-04-18",
           "badges": [{ "cls": "b-forza", "txt": "Forza gambe", "key": "f4a" }]
         },
         {
-          "date": "Sab 19/4",
+          "date": "Dom 19/4",
           "isoDate": "2026-04-19",
           "alt": true,
           "badges": [{ "cls": "b-opt", "txt": "Lv 9 (3ª) opt.", "key": "r9c" }]
-        },
-        {
-          "date": "Dom 20/4",
-          "isoDate": "2026-04-20",
-          "badges": [],
-          "rest": true
         }
       ]
     },
     {
       "piano": "apr2026",
-      "label": "Sett. 5  21–26 apr — Scarico",
-      "note": "🏁 Scarico e gara domenica 26 aprile. 2 corse brevi, 1 forza leggerissima, arrampicata facile, mobilità. Venerdì 25: riposo serale e sonno. Il lavoro è fatto.",
+      "label": "Sett. 5  20–26 apr — Scarico",
+      "note": "🏁 Scarico e gara domenica 26 aprile. 2 corse brevi, 1 forza leggerissima, arrampicata facile, mobilità. Sabato 25: riposo serale e sonno. Il lavoro è fatto.",
       "cols": 7,
       "days": [
         {
-          "date": "Lun 21/4",
+          "date": "Lun 20/4",
+          "isoDate": "2026-04-20",
+          "badges": [],
+          "rest": true
+        },
+        {
+          "date": "Mar 21/4",
           "isoDate": "2026-04-21",
           "badges": [{ "cls": "b-run", "txt": "Corsa easy 20 min", "key": "rsca" }]
         },
         {
-          "date": "Mar 22/4",
+          "date": "Mer 22/4",
           "isoDate": "2026-04-22",
           "badges": [{ "cls": "b-forza", "txt": "Forza scarico", "key": "f5" }]
         },
         {
-          "date": "Mer 23/4",
+          "date": "Gio 23/4",
           "isoDate": "2026-04-23",
           "badges": [{ "cls": "b-climb", "txt": "Arrampicata facile", "key": "c5" }]
         },
         {
-          "date": "Gio 24/4",
+          "date": "Ven 24/4",
           "isoDate": "2026-04-24",
           "badges": [{ "cls": "b-run", "txt": "Corsa 15 min + strides", "key": "rscb" }]
         },
         {
-          "date": "Ven 25/4",
+          "date": "Sab 25/4",
           "isoDate": "2026-04-25",
           "badges": [{ "cls": "b-mob", "txt": "Mobilità pre-gara", "key": "mob5" }]
         },
