@@ -6,7 +6,8 @@ from zoneinfo import ZoneInfo
 
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import (
-    Application, CommandHandler, CallbackQueryHandler, ContextTypes
+    Application, CommandHandler, CallbackQueryHandler, MessageHandler,
+    ContextTypes, filters
 )
 
 from config import (
@@ -86,7 +87,10 @@ async def evening_check(context: ContextTypes.DEFAULT_TYPE):
                 [
                     InlineKeyboardButton("✅ Sì", callback_data=f"done:{today.isoformat()}:{workout['key']}"),
                     InlineKeyboardButton("❌ No", callback_data=f"no:{today.isoformat()}:{workout['key']}"),
-                ]
+                ],
+                [
+                    InlineKeyboardButton("📝 Altro", callback_data=f"altro:{today.isoformat()}:{workout['key']}"),
+                ],
             ])
 
             await context.bot.send_message(
@@ -123,13 +127,14 @@ async def morning_check(context: ContextTypes.DEFAULT_TYPE):
 
     try:
         sb = get_supabase()
-        yesterday_logs = sb.table('workout_log').select('workout_key,status,reason,rpe').eq('date', yesterday.isoformat()).execute()
+        yesterday_logs = sb.table('workout_log').select('workout_key,status,reason,rpe,user_note').eq('date', yesterday.isoformat()).execute()
         skipped = [r for r in (yesterday_logs.data or []) if r.get('status') == 'skipped']
+        note_rows = [r for r in (yesterday_logs.data or []) if r.get('status') == 'altro']
 
         # Workout completati con RPE alto
         high_rpe_rows = [r for r in (yesterday_logs.data or []) if r.get('status') == 'done' and (r.get('rpe') or 0) >= 8]
 
-        if not skipped and not high_rpe_rows:
+        if not skipped and not high_rpe_rows and not note_rows:
             # Nessun workout saltato né RPE alto (o nessuna risposta = beneficio del dubbio)
             await context.bot.send_message(chat_id=CHAT_ID, text=f"☀️ Buongiorno!\n\n{today_txt}\n\n🔗 {PAGE_URL}#{today.isoformat()}", parse_mode='Markdown')
             return
@@ -148,7 +153,7 @@ async def morning_check(context: ContextTypes.DEFAULT_TYPE):
                     'reason': s.get('reason', 'no_time'),
                 })
 
-        if not skipped_with_detail and not high_rpe_rows:
+        if not skipped_with_detail and not high_rpe_rows and not note_rows:
             # Skipped keys no longer in plan (plan was updated) — treat as done
             await context.bot.send_message(chat_id=CHAT_ID, text=f"☀️ Buongiorno!\n\n{today_txt}\n\n🔗 {PAGE_URL}#{today.isoformat()}", parse_mode='Markdown')
             return
@@ -183,6 +188,10 @@ async def morning_check(context: ContextTypes.DEFAULT_TYPE):
             'secondary_goal': 'Forza gambe (Resistenza Verticale) + arrampicata',
             'done_workouts': done_with_rpe,
             'high_rpe_trigger': bool(high_rpe_rows),
+            'user_notes': [
+                {'workout_key': r['workout_key'], 'nota': r['user_note']}
+                for r in note_rows if r.get('user_note')
+            ],
         }
 
         adaptation, today_modified, today_override = propose_adaptation(claude_context, ANTHROPIC_API_KEY)
@@ -281,6 +290,33 @@ async def handle_rpe(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await query.edit_message_text(f"✅ Fatto — RPE {rpe}/10 📊")
 
 
+async def handle_altro(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    query = update.callback_query
+    await query.answer()
+    _, date_str, workout_key = query.data.split(':', 2)
+
+    sb = get_supabase()
+    sb.table('workout_log').upsert(
+        {'date': date_str, 'workout_key': workout_key, 'status': 'altro', 'evening_check_sent': True},
+        on_conflict='date,workout_key'
+    ).execute()
+
+    context.chat_data['awaiting_note'] = (date_str, workout_key)
+    await query.edit_message_text("📝 Scrivi cos'è successo (cosa hai fatto, perché non hai fatto, com'è andata):")
+
+
+async def handle_free_text(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    if 'awaiting_note' not in context.chat_data:
+        return
+    date_str, workout_key = context.chat_data.pop('awaiting_note')
+    note = update.message.text
+
+    sb = get_supabase()
+    sb.table('workout_log').update({'user_note': note}).eq('date', date_str).eq('workout_key', workout_key).execute()
+
+    await update.message.reply_text("📝 Nota salvata! La leggerò domani mattina.")
+
+
 # ── COMANDI DI TEST ────────────────────────────────────────────────────────
 
 async def cmd_test_evening(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -303,10 +339,14 @@ def main():
     app.add_handler(CallbackQueryHandler(handle_no, pattern=r'^no:'))
     app.add_handler(CallbackQueryHandler(handle_reason, pattern=r'^reason:'))
     app.add_handler(CallbackQueryHandler(handle_rpe, pattern=r'^rpe:'))
+    app.add_handler(CallbackQueryHandler(handle_altro, pattern=r'^altro:'))
 
     # Comandi di test
     app.add_handler(CommandHandler('test_evening', cmd_test_evening))
     app.add_handler(CommandHandler('test_morning', cmd_test_morning))
+
+    # Risposta testo libero (nota workout)
+    app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_free_text))
 
     # Scheduler
     job_queue = app.job_queue
