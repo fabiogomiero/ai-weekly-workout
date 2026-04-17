@@ -90,8 +90,9 @@ function renderCalendar() {
       const logEntry = day.isoDate ? workoutLogCache[logKey] : null;
       const isDone = logEntry?.status === 'done';
       const isSkipped = logEntry?.status === 'skipped';
+      const isAltro = logEntry?.status === 'altro';
 
-      const statusCls = isDone ? ' b-done' : isSkipped ? ' b-skipped' : '';
+      const statusCls = isDone ? ' b-done' : isSkipped ? ' b-skipped' : isAltro ? ' b-altro' : '';
       const onclick = `onclick="showDetail('${b.key}')"`;
 
       // Pulsante Fatto (su tutti i giorni con workout, passati e presenti)
@@ -103,8 +104,12 @@ function renderCalendar() {
           fatoBtn = `<button class="btn-fatto btn-fatto-done" disabled>✓ Completato</button>${rpeDisplay}`;
         } else if (isSkipped) {
           fatoBtn = `<button class="btn-fatto btn-fatto-skipped" onclick="markAsDone('${day.isoDate}','${b.key}',this)">↩ Recuperato</button>`;
+        } else if (isAltro) {
+          const preview = logEntry?.user_note ? logEntry.user_note.slice(0, 40) + (logEntry.user_note.length > 40 ? '…' : '') : 'Annotato';
+          fatoBtn = `<span class="btn-fatto btn-fatto-altro">📝 ${preview}</span>`;
         } else {
-          fatoBtn = `<button class="btn-fatto" onclick="markAsDone('${day.isoDate}','${b.key}',this)">✓ Fatto</button>`;
+          fatoBtn = `<button class="btn-fatto" onclick="markAsDone('${day.isoDate}','${b.key}',this)">✓ Fatto</button>` +
+                    `<button class="btn-altro" onclick="showAltroInput('${day.isoDate}','${b.key}',this)">📝 Altro</button>`;
         }
       }
 
@@ -185,11 +190,11 @@ async function loadWorkoutLog() {
   try {
     const { data, error } = await supabaseClient
       .from('workout_log')
-      .select('date, workout_key, status, reason, rpe');
+      .select('date, workout_key, status, reason, rpe, user_note');
     if (error) throw error;
     workoutLogCache = {};
     (data || []).forEach(row => {
-      workoutLogCache[`${row.date}:${row.workout_key}`] = { status: row.status, reason: row.reason, rpe: row.rpe };
+      workoutLogCache[`${row.date}:${row.workout_key}`] = { status: row.status, reason: row.reason, rpe: row.rpe, user_note: row.user_note };
     });
   } catch (e) {
     console.warn('Supabase non configurato o non raggiungibile:', e.message);
@@ -241,6 +246,37 @@ async function saveRpe(dateStr, workoutKey, rpe, container) {
     container.innerHTML = `<span class="rpe-value">RPE ${rpe}/10</span>`;
   } catch (e) {
     console.error('Errore salvataggio RPE:', e);
+  }
+}
+
+function showAltroInput(dateStr, workoutKey, btn) {
+  const container = btn.parentElement;
+  btn.style.display = 'none';
+  const div = document.createElement('div');
+  div.className = 'altro-input';
+  div.innerHTML =
+    `<textarea placeholder="Cos'è successo?" rows="2"></textarea>` +
+    `<button onclick="saveNote('${dateStr}','${workoutKey}',this)">Salva</button>`;
+  container.appendChild(div);
+}
+
+async function saveNote(dateStr, workoutKey, btn) {
+  const textarea = btn.previousElementSibling;
+  const note = textarea.value.trim();
+  if (!note) return;
+  try {
+    const { error } = await supabaseClient
+      .from('workout_log')
+      .upsert(
+        { date: dateStr, workout_key: workoutKey, status: 'altro', user_note: note },
+        { onConflict: 'date,workout_key' }
+      );
+    if (error) throw error;
+    workoutLogCache[`${dateStr}:${workoutKey}`] = { status: 'altro', user_note: note };
+    renderCalendar();
+  } catch (e) {
+    console.error('Errore salvataggio nota:', e);
+    alert('Errore salvataggio. Verifica la configurazione Supabase.');
   }
 }
 
