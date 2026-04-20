@@ -64,6 +64,13 @@ def propose_adaptation(
     else:
         done_section = ''
 
+    user_notes = context.get('user_notes', [])
+    if user_notes:
+        notes_lines = '\n'.join(f'- [{n["workout_key"]}] {n["nota"]}' for n in user_notes)
+        notes_section = f"\nNote libere dell'utente:\n{notes_lines}\n"
+    else:
+        notes_section = ''
+
     if high_rpe_trigger and not context['skipped_workouts']:
         trigger_line = "L'atleta ha completato tutti gli allenamenti ma con RPE elevato. Proponi un adattamento per recupero."
     else:
@@ -71,7 +78,7 @@ def propose_adaptation(
 
     user_prompt = f"""Ieri l'atleta ha saltato:
 {skipped_lines}
-{done_section}
+{done_section}{notes_section}
 Settimana corrente: Settimana {context['week_number']} — {context['week_focus']}
 Giorni alla gara 10km: {days_to_race}
 
