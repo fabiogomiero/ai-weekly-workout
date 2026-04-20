@@ -65,19 +65,33 @@ def propose_adaptation(
         done_section = ''
 
     user_notes = context.get('user_notes', [])
-    if user_notes:
-        notes_lines = '\n'.join(f'- [{n["workout_key"]}] {n["nota"]}' for n in user_notes)
+    skipped_workouts = context['skipped_workouts']
+    rest_note_entry = next(
+        (n for n in user_notes if n.get('workout_key') == 'rest'),
+        None,
+    )
+
+    # Build notes_section only for non-rest-day notes (rest note goes in opening)
+    other_notes = [n for n in user_notes if n.get('workout_key') != 'rest'] if rest_note_entry and not skipped_workouts else user_notes
+    if other_notes:
+        notes_lines = '\n'.join(f'- [{n["workout_key"]}] {n["nota"]}' for n in other_notes)
         notes_section = f"\nNote libere dell'utente:\n{notes_lines}\n"
     else:
         notes_section = ''
 
-    if high_rpe_trigger and not context['skipped_workouts']:
+    if high_rpe_trigger and not skipped_workouts:
         trigger_line = "L'atleta ha completato tutti gli allenamenti ma con RPE elevato. Proponi un adattamento per recupero."
+    elif not skipped_workouts and rest_note_entry and not high_rpe_trigger:
+        trigger_line = 'Valuta la nota e proponi eventuali aggiustamenti per oggi se necessario.'
     else:
         trigger_line = 'Proponi un adattamento considerando il motivo del salto.'
 
-    user_prompt = f"""Ieri l'atleta ha saltato:
-{skipped_lines}
+    if not skipped_workouts and rest_note_entry:
+        opening = f"Ieri era giorno di riposo. L'atleta ha annotato:\n- {rest_note_entry['nota']}"
+    else:
+        opening = f"Ieri l'atleta ha saltato:\n{skipped_lines}"
+
+    user_prompt = f"""{opening}
 {done_section}{notes_section}
 Settimana corrente: Settimana {context['week_number']} — {context['week_focus']}
 Giorni alla gara 10km: {days_to_race}
