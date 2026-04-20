@@ -59,16 +59,33 @@ async def evening_check(context: ContextTypes.DEFAULT_TYPE):
     plan = load_plan_data()
     today = datetime.now(tz=ROME).date()
 
-    if is_rest_day(today, plan):
-        logger.info("Oggi è giorno di riposo. Nessun check serale.")
-        return
-
-    workouts = get_workouts_for_date(today, plan)
-    if not workouts:
-        return
-
     try:
         sb = get_supabase()
+
+        if is_rest_day(today, plan):
+            existing = sb.table('workout_log').select('evening_check_sent') \
+                .eq('date', today.isoformat()).eq('workout_key', 'rest').execute()
+            if existing.data and existing.data[0].get('evening_check_sent'):
+                logger.info(f"Check serale riposo già inviato per {today}")
+                return
+            sb.table('workout_log').upsert(
+                {'date': today.isoformat(), 'workout_key': 'rest', 'evening_check_sent': True},
+                on_conflict='date,workout_key'
+            ).execute()
+            keyboard = InlineKeyboardMarkup([[
+                InlineKeyboardButton("📝 Scrivi", callback_data=f"altro:{today.isoformat()}:rest"),
+                InlineKeyboardButton("🙅 No", callback_data=f"rest_skip:{today.isoformat()}"),
+            ]])
+            await context.bot.send_message(
+                chat_id=CHAT_ID,
+                text="🛌 Giorno di riposo — hai fatto qualcosa oggi?",
+                reply_markup=keyboard,
+            )
+            return
+
+        workouts = get_workouts_for_date(today, plan)
+        if not workouts:
+            return
 
         for workout in workouts:
             # Anti-doppio invio per questa (date, workout_key)
@@ -317,6 +334,12 @@ async def handle_free_text(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text("📝 Nota salvata! La leggerò domani mattina.")
 
 
+async def handle_rest_skip(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    query = update.callback_query
+    await query.answer()
+    await query.edit_message_text("👌 Ok, buon riposo!")
+
+
 # ── COMANDI DI TEST ────────────────────────────────────────────────────────
 
 async def cmd_test_evening(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -340,6 +363,7 @@ def main():
     app.add_handler(CallbackQueryHandler(handle_reason, pattern=r'^reason:'))
     app.add_handler(CallbackQueryHandler(handle_rpe, pattern=r'^rpe:'))
     app.add_handler(CallbackQueryHandler(handle_altro, pattern=r'^altro:'))
+    app.add_handler(CallbackQueryHandler(handle_rest_skip, pattern=r'^rest_skip:'))
 
     # Comandi di test
     app.add_handler(CommandHandler('test_evening', cmd_test_evening))
