@@ -116,9 +116,22 @@ function renderCalendar() {
       return `<span class="badge ${b.cls}${statusCls}" ${onclick}>${b.txt}</span>${fatoBtn}`;
     }).join('');
 
+    let restContent = '<span class="rest-label">Riposo</span>';
+    if (isRest && day.isoDate) {
+      const restLog = workoutLogCache[`${day.isoDate}:rest`];
+      if (restLog?.status === 'altro') {
+        const preview = restLog.user_note
+          ? restLog.user_note.slice(0, 40) + (restLog.user_note.length > 40 ? '…' : '')
+          : 'Annotato';
+        restContent = `<span class="rest-label">Riposo</span><span class="btn-fatto btn-fatto-altro">📝 ${preview}</span>`;
+      } else {
+        restContent = `<span class="rest-label">Riposo</span><button class="btn-altro" onclick="showAltroInput('${day.isoDate}','rest',this)">📝 Nota</button>`;
+      }
+    }
+
     return `<div id="${day.isoDate || ''}" class="${cls}">
       <div class="day-date">${day.date || ''}</div>
-      ${isRest ? '<span class="rest-label">Riposo</span>' : badges}
+      ${isRest ? restContent : badges}
     </div>`;
   }).join('');
 }

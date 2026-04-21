@@ -59,16 +59,33 @@ async def evening_check(context: ContextTypes.DEFAULT_TYPE):
     plan = load_plan_data()
     today = datetime.now(tz=ROME).date()
 
-    if is_rest_day(today, plan):
-        logger.info("Oggi è giorno di riposo. Nessun check serale.")
-        return
-
-    workouts = get_workouts_for_date(today, plan)
-    if not workouts:
-        return
-
     try:
         sb = get_supabase()
+
+        if is_rest_day(today, plan):
+            existing = sb.table('workout_log').select('evening_check_sent') \
+                .eq('date', today.isoformat()).eq('workout_key', 'rest').execute()
+            if existing.data and existing.data[0].get('evening_check_sent'):
+                logger.info(f"Check serale riposo già inviato per {today}")
+                return
+            sb.table('workout_log').upsert(
+                {'date': today.isoformat(), 'workout_key': 'rest', 'evening_check_sent': True},
+                on_conflict='date,workout_key'
+            ).execute()
+            keyboard = InlineKeyboardMarkup([[
+                InlineKeyboardButton("📝 Scrivi", callback_data=f"altro:{today.isoformat()}:rest"),
+                InlineKeyboardButton("🙅 No", callback_data=f"rest_skip:{today.isoformat()}"),
+            ]])
+            await context.bot.send_message(
+                chat_id=CHAT_ID,
+                text="🛌 Giorno di riposo — hai fatto qualcosa oggi?",
+                reply_markup=keyboard,
+            )
+            return
+
+        workouts = get_workouts_for_date(today, plan)
+        if not workouts:
+            return
 
         for workout in workouts:
             # Anti-doppio invio per questa (date, workout_key)
@@ -121,9 +138,50 @@ async def morning_check(context: ContextTypes.DEFAULT_TYPE):
 
     # Controlla ieri
     if is_rest_day(yesterday, plan):
-        # Nessun controllo per giorni di riposo
-        await context.bot.send_message(chat_id=CHAT_ID, text=f"☀️ Buongiorno!\n\n{today_txt}\n\n🔗 {PAGE_URL}#{today.isoformat()}", parse_mode='Markdown')
-        return
+        # Controlla se c'è una nota dal giorno di riposo
+        try:
+            sb = get_supabase()
+            rest_log = sb.table('workout_log').select('user_note') \
+                .eq('date', yesterday.isoformat()).eq('workout_key', 'rest').execute()
+            rest_note = rest_log.data[0].get('user_note') if rest_log.data else None
+        except Exception as e:
+            logger.warning(f"Impossibile leggere nota riposo da Supabase: {e}")
+            rest_note = None
+        try:
+            if not rest_note:
+                await context.bot.send_message(chat_id=CHAT_ID, text=f"☀️ Buongiorno!\n\n{today_txt}\n\n🔗 {PAGE_URL}#{today.isoformat()}", parse_mode='Markdown')
+                return
+            # Nota da giorno di riposo → passa a Claude come contesto
+            week_ctx = get_week_context(today, plan) or {}
+            week_num = 0
+            for i, w in enumerate(plan['weeks']):
+                for d in w['days']:
+                    if d.get('isoDate') == today.isoformat():
+                        week_num = i + 1
+                        break
+            claude_context = {
+                'skipped_workouts': [],
+                'today_workouts': [{'tipo': w['cls'].replace('b-','').capitalize(), 'descrizione': w['title']} for w in today_workouts],
+                'week_number': week_num,
+                'week_focus': week_ctx.get('note', ''),
+                'days_to_race': (date.fromisoformat(RACE_DATE_STR) - today).days,
+                'primary_goal': 'Gara 10km 26 Aprile 2026',
+                'secondary_goal': 'Forza gambe (Resistenza Verticale) + arrampicata',
+                'done_workouts': [],
+                'high_rpe_trigger': False,
+                'user_notes': [{'workout_key': 'rest', 'nota': rest_note}],
+            }
+            adaptation, today_modified, today_override = propose_adaptation(claude_context, ANTHROPIC_API_KEY)
+            if today_override:
+                today_txt = "💪 *Oggi (adattato):*\n" + today_override
+            elif today_modified:
+                today_txt = "💪 *Oggi (adattato):*\n" + today_modified
+            msg = f"☀️ Buongiorno!\n\n{adaptation}\n\n{today_txt}\n\n🔗 {PAGE_URL}#{today.isoformat()}"
+            await context.bot.send_message(chat_id=CHAT_ID, text=msg, parse_mode='Markdown')
+            return
+        except Exception as e:
+            logger.error(f"Errore check mattutino (rest-day path): {e}")
+            await context.bot.send_message(chat_id=CHAT_ID, text=f"⚠️ Errore check mattutino: {e}")
 
     try:
         sb = get_supabase()
@@ -208,8 +266,10 @@ async def morning_check(context: ContextTypes.DEFAULT_TYPE):
             rpe_summary = ', '.join(f"{w['descrizione']} RPE {w['rpe']}" for w in done_with_rpe if w['rpe'] >= 8)
             context_line = f"📊 Ieri RPE alto: _{rpe_summary}_\n" if rpe_summary else "📊 Ieri carico elevato percepito.\n"
 
-        if today_modified and today_override:
-            today_txt = f"💪 *Oggi (adattato):* {today_override}"
+        if today_override:
+            today_txt = f"💪 *Oggi (adattato):*\n{today_override}"
+        elif today_modified:
+            today_txt = f"💪 *Oggi (adattato):*\n{today_modified}"
 
         msg = (
             f"☀️ Buongiorno!\n\n"
@@ -317,6 +377,12 @@ async def handle_free_text(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text("📝 Nota salvata! La leggerò domani mattina.")
 
 
+async def handle_rest_skip(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    query = update.callback_query
+    await query.answer()
+    await query.edit_message_text("👌 Ok, buon riposo!")
+
+
 # ── COMANDI DI TEST ────────────────────────────────────────────────────────
 
 async def cmd_test_evening(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -340,6 +406,7 @@ def main():
     app.add_handler(CallbackQueryHandler(handle_reason, pattern=r'^reason:'))
     app.add_handler(CallbackQueryHandler(handle_rpe, pattern=r'^rpe:'))
     app.add_handler(CallbackQueryHandler(handle_altro, pattern=r'^altro:'))
+    app.add_handler(CallbackQueryHandler(handle_rest_skip, pattern=r'^rest_skip:'))
 
     # Comandi di test
     app.add_handler(CommandHandler('test_evening', cmd_test_evening))
