@@ -16,6 +16,12 @@ Se RPE ≤ 4, l'allenamento era sottotono: puoi suggerire di mantenere o aumenta
 FALLBACK = ("Continua con il piano previsto. 💪", False, "")
 
 
+def _reason_text(w: dict) -> str:
+    if w.get('reason') == 'tired':   return 'stanchezza fisica'
+    if w.get('reason') == 'no_time': return 'mancanza di tempo'
+    return 'motivo in nota libera'
+
+
 def _parse_claude_response(raw: str) -> tuple[str, bool, str]:
     """
     Parsa la risposta JSON di Claude.
@@ -45,7 +51,7 @@ def propose_adaptation(
     days_to_race = context['days_to_race']
 
     skipped_lines = '\n'.join(
-        f'- {w["tipo"]}: {w["descrizione"]} (motivo: {"stanchezza fisica" if w["reason"] == "tired" else "mancanza di tempo"})'
+        f'- {w["tipo"]}: {w["descrizione"]} (motivo: {_reason_text(w)})'
         for w in context['skipped_workouts']
     )
     today_lines = '\n'.join(
