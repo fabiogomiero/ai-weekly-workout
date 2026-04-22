@@ -312,6 +312,11 @@ async def handle_no(update: Update, context: ContextTypes.DEFAULT_TYPE):
     query = update.callback_query
     await query.answer()
     _, date_str, workout_key = query.data.split(':', 2)
+    sb = get_supabase()
+    sb.table('workout_log').upsert(
+        {'date': date_str, 'workout_key': workout_key, 'status': 'skipped', 'evening_check_sent': True},
+        on_conflict='date,workout_key'
+    ).execute()
     context.chat_data['awaiting_note'] = (date_str, workout_key, 'skip')
     await query.edit_message_text("❌ Hai saltato — scrivi una breve nota (motivo, come ti senti, …):")
 
@@ -346,19 +351,14 @@ async def handle_altro(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def handle_free_text(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if 'awaiting_note' not in context.chat_data:
         return
-    date_str, workout_key, mode = context.chat_data.pop('awaiting_note')
-    note = update.message.text
+    date_str, workout_key, _ = context.chat_data.pop('awaiting_note')
+    note = update.message.text.strip()
+    if not note:
+        return
 
     sb = get_supabase()
-    if mode == 'skip':
-        sb.table('workout_log').upsert(
-            {'date': date_str, 'workout_key': workout_key, 'status': 'skipped',
-             'user_note': note, 'evening_check_sent': True},
-            on_conflict='date,workout_key'
-        ).execute()
-    else:
-        sb.table('workout_log').update({'user_note': note}) \
-            .eq('date', date_str).eq('workout_key', workout_key).execute()
+    sb.table('workout_log').update({'user_note': note}) \
+        .eq('date', date_str).eq('workout_key', workout_key).execute()
 
     await update.message.reply_text("📝 Nota salvata! La leggerò domani mattina.")
 
