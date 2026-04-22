@@ -208,7 +208,7 @@ async def morning_check(context: ContextTypes.DEFAULT_TYPE):
                 skipped_with_detail.append({
                     'tipo': detail['cls'].replace('b-', '').capitalize(),
                     'descrizione': detail['title'],
-                    'reason': s.get('reason', 'no_time'),
+                    'reason': s.get('reason'),
                 })
 
         if not skipped_with_detail and not high_rpe_rows and not note_rows:
@@ -248,7 +248,8 @@ async def morning_check(context: ContextTypes.DEFAULT_TYPE):
             'high_rpe_trigger': bool(high_rpe_rows),
             'user_notes': [
                 {'workout_key': r['workout_key'], 'nota': r['user_note']}
-                for r in note_rows if r.get('user_note')
+                for r in (yesterday_logs.data or [])
+                if r.get('user_note')
             ],
         }
 
@@ -311,31 +312,13 @@ async def handle_no(update: Update, context: ContextTypes.DEFAULT_TYPE):
     query = update.callback_query
     await query.answer()
     _, date_str, workout_key = query.data.split(':', 2)
-
-    keyboard = InlineKeyboardMarkup([
-        [
-            InlineKeyboardButton("😴 Ero stanco", callback_data=f"reason:tired:{date_str}:{workout_key}"),
-            InlineKeyboardButton("⏰ Non ho avuto tempo", callback_data=f"reason:no_time:{date_str}:{workout_key}"),
-        ]
-    ])
-    # Sostituisce il messaggio originale (Sì/No) con la nuova domanda (motivo)
-    # Un solo messaggio attivo → nessun keyboard duplicato
-    await query.edit_message_text("Perché hai saltato?", reply_markup=keyboard)
-
-
-async def handle_reason(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    query = update.callback_query
-    await query.answer()
-    _, reason, date_str, workout_key = query.data.split(':', 3)
-
     sb = get_supabase()
     sb.table('workout_log').upsert(
-        {'date': date_str, 'workout_key': workout_key, 'status': 'skipped', 'reason': reason, 'evening_check_sent': True},
+        {'date': date_str, 'workout_key': workout_key, 'status': 'skipped', 'evening_check_sent': True},
         on_conflict='date,workout_key'
     ).execute()
-
-    msg = "Ok, il recupero è parte dell'allenamento. 🛌" if reason == 'tired' else "Capito, vediamo domani come recuperare. 📅"
-    await query.edit_message_text(msg)
+    context.chat_data['awaiting_note'] = (date_str, workout_key, 'skip')
+    await query.edit_message_text("❌ Hai saltato — scrivi una breve nota (motivo, come ti senti, …):")
 
 
 async def handle_rpe(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -361,18 +344,21 @@ async def handle_altro(update: Update, context: ContextTypes.DEFAULT_TYPE):
         on_conflict='date,workout_key'
     ).execute()
 
-    context.chat_data['awaiting_note'] = (date_str, workout_key)
+    context.chat_data['awaiting_note'] = (date_str, workout_key, 'altro')
     await query.edit_message_text("📝 Scrivi cos'è successo (cosa hai fatto, perché non hai fatto, com'è andata):")
 
 
 async def handle_free_text(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if 'awaiting_note' not in context.chat_data:
         return
-    date_str, workout_key = context.chat_data.pop('awaiting_note')
-    note = update.message.text
+    date_str, workout_key, _ = context.chat_data.pop('awaiting_note')
+    note = update.message.text.strip()
+    if not note:
+        return
 
     sb = get_supabase()
-    sb.table('workout_log').update({'user_note': note}).eq('date', date_str).eq('workout_key', workout_key).execute()
+    sb.table('workout_log').update({'user_note': note}) \
+        .eq('date', date_str).eq('workout_key', workout_key).execute()
 
     await update.message.reply_text("📝 Nota salvata! La leggerò domani mattina.")
 
@@ -403,7 +389,6 @@ def main():
     # Callback handlers
     app.add_handler(CallbackQueryHandler(handle_done, pattern=r'^done:'))
     app.add_handler(CallbackQueryHandler(handle_no, pattern=r'^no:'))
-    app.add_handler(CallbackQueryHandler(handle_reason, pattern=r'^reason:'))
     app.add_handler(CallbackQueryHandler(handle_rpe, pattern=r'^rpe:'))
     app.add_handler(CallbackQueryHandler(handle_altro, pattern=r'^altro:'))
     app.add_handler(CallbackQueryHandler(handle_rest_skip, pattern=r'^rest_skip:'))
