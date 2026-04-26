@@ -12,7 +12,7 @@ from telegram.ext import (
 
 from config import (
     TELEGRAM_TOKEN, CHAT_ID, SUPABASE_URL, SUPABASE_KEY,
-    ANTHROPIC_API_KEY, PLAN_JSON_PATH, RACE_DATE_STR, PAGE_URL
+    ANTHROPIC_API_KEY, PLAN_JSON_PATH, PLAN_GARA, PAGE_URL
 )
 from schedule_logic import get_workouts_for_date, is_rest_day, get_week_context, load_plan
 from claude_adapter import propose_adaptation
@@ -164,8 +164,7 @@ async def morning_check(context: ContextTypes.DEFAULT_TYPE):
                 'today_workouts': [{'tipo': w['cls'].replace('b-','').capitalize(), 'descrizione': w['title']} for w in today_workouts],
                 'week_number': week_num,
                 'week_focus': week_ctx.get('note', ''),
-                'days_to_race': (date.fromisoformat(RACE_DATE_STR) - today).days,
-                'primary_goal': 'Gara 10km 26 Aprile 2026',
+                'obiettivo': PLAN_GARA,
                 'secondary_goal': 'Forza gambe (Resistenza Verticale) + arrampicata',
                 'done_workouts': [],
                 'high_rpe_trigger': False,
@@ -241,8 +240,7 @@ async def morning_check(context: ContextTypes.DEFAULT_TYPE):
             'today_workouts': [{'tipo': w['cls'].replace('b-','').capitalize(), 'descrizione': w['title']} for w in today_workouts],
             'week_number': week_num,
             'week_focus': week_ctx.get('note', ''),
-            'days_to_race': (date.fromisoformat(RACE_DATE_STR) - today).days,
-            'primary_goal': 'Gara 10km 26 Aprile 2026',
+            'obiettivo': PLAN_GARA,
             'secondary_goal': 'Forza gambe (Resistenza Verticale) + arrampicata',
             'done_workouts': done_with_rpe,
             'high_rpe_trigger': bool(high_rpe_rows),

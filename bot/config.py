@@ -15,7 +15,9 @@ ANTHROPIC_API_KEY = os.environ['ANTHROPIC_API_KEY']
 # Piano corrente ricavato dal manifest
 _manifest_path = Path(__file__).parent.parent / 'data' / 'plans.json'
 _manifest = json.loads(_manifest_path.read_text(encoding='utf-8'))
-_current = next(p for p in _manifest if p['current'])
+_current = next((p for p in _manifest if p['current']), None)
+if _current is None:
+    raise RuntimeError('data/plans.json: nessun piano con "current": true')
 
 PLAN_JSON_PATH = Path(__file__).parent.parent / 'data' / _current['file']
 PLAN_GARA = _current['gara']

@@ -3,9 +3,6 @@ import json
 import anthropic
 
 SYSTEM_PROMPT = """Sei un coach di corsa e forza specializzato.
-Obiettivo primario dell'atleta: correre 10km il 26 Aprile 2026.
-Obiettivo secondario: aumentare forza e resistenza gambe (metodo Resistenza Verticale) + arrampicata boulder/indoor.
-Quando proponi adattamenti, prioritizza sempre il recupero per la gara.
 Se il motivo è stanchezza fisica, proponi riposo attivo o riduzione del volume.
 Se il motivo è mancanza di tempo, proponi come recuperare il workout saltato.
 Rispondi SOLO in italiano. Rispondi SOLO con JSON valido nel formato specificato. Nessun testo fuori dal JSON.
@@ -41,8 +38,7 @@ def propose_adaptation(
     Restituisce (adaptation_text, today_modified, today_override).
     In caso di qualsiasi errore, restituisce FALLBACK.
     """
-    # Usa il valore passato nel context (testabile e deterministico)
-    days_to_race = context['days_to_race']
+    obiettivo = context.get('obiettivo', '')
 
     skipped_lines = '\n'.join(
         f'- {w["tipo"]}: {w["descrizione"]} (motivo: {"stanchezza fisica" if w["reason"] == "tired" else "mancanza di tempo"})'
@@ -94,7 +90,7 @@ def propose_adaptation(
     user_prompt = f"""{opening}
 {done_section}{notes_section}
 Settimana corrente: Settimana {context['week_number']} — {context['week_focus']}
-Giorni alla gara 10km: {days_to_race}
+Obiettivo: {obiettivo}
 
 Allenamento previsto oggi:
 {today_lines}
