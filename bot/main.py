@@ -165,7 +165,6 @@ async def morning_check(context: ContextTypes.DEFAULT_TYPE):
                 'week_number': week_num,
                 'week_focus': week_ctx.get('note', ''),
                 'obiettivo': PLAN_GARA,
-                'secondary_goal': 'Forza gambe (Resistenza Verticale) + arrampicata',
                 'done_workouts': [],
                 'high_rpe_trigger': False,
                 'user_notes': [{'workout_key': 'rest', 'nota': rest_note}],
@@ -241,7 +240,6 @@ async def morning_check(context: ContextTypes.DEFAULT_TYPE):
             'week_number': week_num,
             'week_focus': week_ctx.get('note', ''),
             'obiettivo': PLAN_GARA,
-            'secondary_goal': 'Forza gambe (Resistenza Verticale) + arrampicata',
             'done_workouts': done_with_rpe,
             'high_rpe_trigger': bool(high_rpe_rows),
             'user_notes': [
