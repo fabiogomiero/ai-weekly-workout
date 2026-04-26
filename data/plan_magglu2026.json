@@ -1,0 +1,885 @@
+{
+  "piani": [
+    {
+      "id": "maggiu2026",
+      "label": "Piano Maggio–Giugno 2026",
+      "meta": "27 apr → 28 giu 2026",
+      "gara": "Obiettivo: Alta montagna estate 2026",
+      "current": true
+    }
+  ],
+  "details": {
+    "note_post_gara": {
+      "title": "Post-gara — recupero attivo · lun 27 apr",
+      "body": "<strong>Complimenti per la 10km!</strong> La settimana post-gara è di recupero: niente carichi pesanti, niente corsa intensa. Gambe che fanno male = adattamento in corso. Mobilità e camminate leggere sono tutto quello che serve."
+    },
+    "mob_A": {
+      "title": "Mobilità/recupero base · ~20 min",
+      "body": "<strong>~20 min.</strong> World lunge 5/lato · 90/90 stretch 60s/lato · Downward dog pompate polpacci · Foam roller quadricipiti e polpacci. Respirazione nasale per tutto il blocco — è già allenamento RV."
+    },
+    "mob_B": {
+      "title": "Mobilità intermedia + propriocezione · ~25 min",
+      "body": "<strong>~25 min.</strong> World lunge · 90/90 · Piriforme stretch · Single-leg deadlift leggerissimo 2×8/lato (propriocezione caviglia) · Foam roller IT-band. Priorità: caviglie e anche."
+    },
+    "mob_C": {
+      "title": "Mobilità avanzata + respirazione RV · ~30 min",
+      "body": "<strong>~30 min · non saltare nelle settimane di picco.</strong> World lunge · 90/90 · Ileopsoas stretch · Foam roller gambe complete · 5 min respirazione diaframmatica sdraiato (metodo RV): inspira 4s gonfiando la pancia, espira 6s. Abbassa cortisolo e migliora la soglia aerobica."
+    },
+    "mob_pre_mont": {
+      "title": "Mobilità pre-uscita montagna · ~20 min",
+      "body": "<strong>~20 min · solo dinamica — sera prima dell'uscita.</strong> Leg swing avanti/dietro · Intrarotazioni anca · Mobilità caviglia a muro · A-skip 2×15m. Niente statico prolungato. Prepara zaino, controlla meteo, dormi 8 ore."
+    },
+    "r_easy_30": {
+      "title": "Corsa easy · 30 min",
+      "body": "<strong>30 min continui a ritmo conversazionale.</strong> Respirazione nasale obbligatoria: se non riesci a respirare solo dal naso, rallenta. Obiettivo: mantenere la base aerobica conquistata con la 10km. Terreno pianeggiante o lieve falsopiano."
+    },
+    "r_easy_35": {
+      "title": "Corsa easy · 35 min",
+      "body": "<strong>35 min continui.</strong> Respirazione nasale. Puoi iniziare a cercare percorsi con qualche salita breve (50-100m D+): la corsa in salita è il ponte diretto verso la montagna. Passo corto, frequenza alta."
+    },
+    "r_trail_40": {
+      "title": "Corsa trail / fartlek collinare · 40 min",
+      "body": "<strong>40 min su percorso misto piano-salita.</strong> Se hai accesso a un parco o collina: cammina le salite ripide, corri i falsopiani e le discese dolci. È già allenamento specifico montagna. Respirazione nasale in salita è il termometro dell'intensità."
+    },
+    "r_trail_45": {
+      "title": "Corsa trail collinare · 45 min",
+      "body": "<strong>45 min su percorso misto.</strong> Cerca 200-300m D+ totali. Cammina le salite >12% di pendenza, corri il resto. Bastoncini facoltativi in salita — abituati all'uso del braccio. Valuta 1-2-3 dopo la sessione."
+    },
+    "r_long_50": {
+      "title": "Uscita lunga · 50 min trail o piano",
+      "body": "<strong>50 min.</strong> La sessione più lunga della settimana. Ritmo bassissimo — devi finire senza stanchezza residua. Se flat: 50 min continui. Se trail: cammina le salite senza vergogna, è tattica non debolezza."
+    },
+    "r_long_55": {
+      "title": "Uscita lunga · 55 min trail",
+      "body": "<strong>55 min su percorso collinare.</strong> Target: 300-400m D+. Questo volume di dislivello ti porta direttamente nella specificità della montagna estiva. Respirazione nasale in salita come unico metro di giudizio del passo."
+    },
+    "fa_M1_1": {
+      "title": "Forza gambe A · Fase 1 sett. 1 — Riattivazione",
+      "body": "<span class=\"vol-tag\">Fase 1 — riattivazione post-gara</span><br><strong>3 giri · ~30 min · recupero 60s</strong><br>Squat corpo libero 3×12 · Affondi alternati 3×10/lato · Step-up su sedia 3×10/lato · Calf raise 3×15.<br>Nessun peso. Le gambe hanno la gara nelle gambe: tecnica pulita, respirazione nasale, stop."
+    },
+    "fb_M1_1": {
+      "title": "Forza gambe B · Fase 1 sett. 1 — Riattivazione",
+      "body": "<span class=\"vol-tag\">Fase 1 — riattivazione post-gara</span><br><strong>3 giri · ~30 min · recupero 60s</strong><br>Wall sit 3×30s · Squat con elastico 3×12 · Hip hinge corpo libero 3×10 · Glute bridge 3×15 · Single-leg calf raise 3×10/lato.<br>Respirazione nasale per tutto. Focus sulla sensazione muscolare, non sul carico."
+    },
+    "fa_M1_2": {
+      "title": "Forza gambe A · Fase 1 sett. 2",
+      "body": "<span class=\"vol-tag up\">↑ +carico leggero rispetto sett. 1</span><br><strong>3 giri · ~32 min · recupero 55s</strong><br>Squat con manubri leggeri 3×12 · Affondi con elastico 3×12/lato · Step-up sedia 3×12/lato · Single-leg calf raise 3×12.<br>Prima settimana con carico esterno: manubri da 4-6 kg nello squat. Respirazione nasale."
+    },
+    "fb_M1_2": {
+      "title": "Forza gambe B · Fase 1 sett. 2",
+      "body": "<span class=\"vol-tag up\">↑ +carico leggero rispetto sett. 1</span><br><strong>3 giri · ~32 min · recupero 55s</strong><br>Bulgarian split squat corpo libero 3×10/lato · Hip hinge con manubri 3×12 · Glute bridge monogamba 3×10/lato · Wall sit 3×35s.<br>Il Bulgarian split squat è l'esercizio-chiave per la salita: eseguilo lento e controllato."
+    },
+    "fa_M1_3": {
+      "title": "Forza gambe A · Fase 1 sett. 3",
+      "body": "<span class=\"vol-tag up\">↑ +10% carico + recupero più breve</span><br><strong>3 giri · ~35 min · recupero 50s</strong><br>Squat con manubri 3×12 · Affondi cammino con elastico 3×12/lato · Step-up alto 3×12/lato · Single-leg calf raise 3×12.<br>Aumenta i manubri nello squat (+2 kg rispetto sett. 2). Recupero scende a 50s."
+    },
+    "fb_M1_3": {
+      "title": "Forza gambe B · Fase 1 sett. 3",
+      "body": "<span class=\"vol-tag up\">↑ +10% carico rispetto sett. 2</span><br><strong>3 giri · ~35 min · recupero 50s</strong><br>Bulgarian split squat con manubri leggeri 3×10/lato · Hip hinge con manubri 3×12 · Glute bridge con elastico 3×12 · Wall sit 3×40s · RDL monogamba corpo libero 3×8/lato.<br>Prima volta con il RDL monogamba: eseguilo lentissimo, è propriocezione."
+    },
+    "fa_M2_1": {
+      "title": "Forza gambe A · Fase 2 sett. 4 — Sviluppo",
+      "body": "<span class=\"vol-tag up\">↑ +1 giro — inizio Fase 2</span><br><strong>4 giri · ~38 min · recupero 50s</strong><br>Squat con manubri 4×10 · Affondi cammino con elastico 4×10/lato · Step-up con zaino leggero (3-5 kg) 4×10/lato · Calf raise su gradino 4×15.<br>Primo utilizzo dello zaino nello step-up: simula il peso in montagna. Tieni il busto eretto."
+    },
+    "fb_M2_1": {
+      "title": "Forza gambe B · Fase 2 sett. 4 — Sviluppo",
+      "body": "<span class=\"vol-tag up\">↑ +1 giro — inizio Fase 2</span><br><strong>4 giri · ~38 min · recupero 50s</strong><br>Bulgarian split squat con manubri 4×10/lato · Hip hinge con manubri 4×12 · Glute bridge con elastico 4×12 · Wall sit 4×40s · RDL monogamba leggero 3×10/lato.<br>Il wall sit a 4 giri è impegnativo: è normale. Simula l'affaticamento isometrico della discesa prolungata."
+    },
+    "fa_M2_2": {
+      "title": "Forza gambe A · Fase 2 sett. 5",
+      "body": "<span class=\"vol-tag up\">↑ +carico zaino e manubri</span><br><strong>4 giri · ~40 min · recupero 45s</strong><br>Squat con manubri 4×10 (+2 kg rispetto sett. 4) · Affondi cammino con elastico 4×12/lato · Step-up con zaino 5-7 kg 4×10/lato · Single-leg calf raise 4×12.<br>Recupero scende a 45s. Se mantieni la respirazione nasale nei giri 3-4 sei nei parametri giusti."
+    },
+    "fb_M2_2": {
+      "title": "Forza gambe B · Fase 2 sett. 5",
+      "body": "<span class=\"vol-tag up\">↑ +carico rispetto sett. 4</span><br><strong>4 giri · ~40 min · recupero 45s</strong><br>Bulgarian split squat con manubri 4×10/lato (+2 kg) · Hip hinge con manubri 4×12 · Glute bridge con elastico 4×15 · Wall sit 4×45s · RDL monogamba con manubrio leggero 3×10/lato.<br>Glute bridge a 15 rip: senti la bruciatura nei glutei alla fine di ogni serie. È il segnale corretto."
+    },
+    "fa_M2_3": {
+      "title": "Forza gambe A · Fase 2 sett. 6",
+      "body": "<span class=\"vol-tag up\">↑ PICCO FASE 2 — massimo carico zaino</span><br><strong>4 giri · ~42 min · recupero 45s</strong><br>Squat con manubri 4×10 · Affondi cammino 4×12/lato · Step-up con zaino 8-10 kg 4×10/lato · Single-leg calf raise 4×15.<br>Zaino 8-10 kg nello step-up: questo è il peso realistico di un'uscita di una giornata in montagna. Il tuo corpo deve riconoscerlo."
+    },
+    "fb_M2_3": {
+      "title": "Forza gambe B · Fase 2 sett. 6",
+      "body": "<span class=\"vol-tag up\">↑ PICCO FASE 2</span><br><strong>4 giri · ~42 min · recupero 45s</strong><br>Bulgarian split squat con manubri 4×12/lato · Hip hinge con manubri 4×12 · Glute bridge con elastico 4×15 · Wall sit 4×50s · RDL monogamba 4×10/lato.<br>Wall sit a 50 secondi: se arrivi al 4° giro con le cosce che tremano, stai lavorando bene."
+    },
+    "fa_M3_1": {
+      "title": "Forza gambe A · Fase 3 sett. 7 — Picco",
+      "body": "<span class=\"vol-tag up\">↑ PICCO MASSIMO — massimo stimolo</span><br><strong>4-5 giri · ~45 min · recupero 40s</strong><br>Squat con manubri 5×10 · Affondi cammino con elastico 5×10/lato · Step-up con zaino 10 kg 5×10/lato · Single-leg calf raise 4×15 · Box jump basso 3×8 (se disponibile).<br>5 giri solo se ti senti bene al 4°. Il box jump è esplosività: atterraggio morbido, ginocchia flesse. Recupero 40s: senti il fiato."
+    },
+    "fb_M3_1": {
+      "title": "Forza gambe B · Fase 3 sett. 7 — Picco",
+      "body": "<span class=\"vol-tag up\">↑ PICCO MASSIMO</span><br><strong>4 giri · ~43 min · recupero 40s</strong><br>Bulgarian split squat con manubri 4×12/lato · Hip hinge con manubri 4×12 · Glute bridge con elastico 4×15 · Wall sit 4×55s · RDL monogamba 4×12/lato.<br>Questa settimana è la più dura del piano: ascolta il corpo. Se giovedì arrivi distrutto, riduci a 3 giri senza rimpianti."
+    },
+    "fa_M3_2": {
+      "title": "Forza gambe A · Fase 3 sett. 8 — Scarico",
+      "body": "<span class=\"vol-tag\">↓ Scarico — -30% volume</span><br><strong>3 giri · ~28 min · recupero 60s</strong><br>Squat con manubri 3×10 · Affondi alternati 3×8/lato · Step-up con zaino leggero 5 kg 3×8/lato · Calf raise 3×12.<br>Carichi uguali alla sett. 6, volume ridotto. Il corpo consolida qui le adattazioni della sett. 7."
+    },
+    "fb_M3_2": {
+      "title": "Forza gambe B · Fase 3 sett. 8 — Scarico",
+      "body": "<span class=\"vol-tag\">↓ Scarico — -30% volume</span><br><strong>3 giri · ~28 min · recupero 60s</strong><br>Bulgarian split squat 3×8/lato · Hip hinge 3×10 · Glute bridge 3×12 · Wall sit 3×40s · RDL monogamba 3×8/lato.<br>Sensazione target: finire la sessione sentendosi ancora freschi. Se sei stanco, hai fatto troppo."
+    },
+    "fa_M3_3": {
+      "title": "Forza gambe A · sett. 9 — Mantenimento",
+      "body": "<span class=\"vol-tag\">= Mantenimento fine piano</span><br><strong>3 giri · ~30 min · recupero 55s</strong><br>Squat con manubri 3×12 · Affondi cammino 3×10/lato · Step-up con zaino 5-7 kg 3×10/lato · Single-leg calf raise 3×12.<br>Fine giugno: mantieni senza distruggere. La montagna estiva è alle porte."
+    },
+    "fb_M3_3": {
+      "title": "Forza gambe B · sett. 9 — Mantenimento",
+      "body": "<span class=\"vol-tag\">= Mantenimento fine piano</span><br><strong>3 giri · ~30 min · recupero 55s</strong><br>Bulgarian split squat 3×10/lato · Hip hinge 3×12 · Glute bridge con elastico 3×12 · Wall sit 3×40s · RDL monogamba 3×10/lato."
+    },
+    "rv_A": {
+      "title": "Circuito RV — resistenza verticale A · ~30 min",
+      "body": "<strong>Metodo Resistenza Verticale — Circuito A · 3 giri · recupero 60s tra esercizi</strong><br><br>1. Step-up rapido su sedia 2×45s (frequenza alta, simula ritmo salita) <br>2. Squat isometrico a parete 45s <br>3. Affondi alternati 12/lato <br>4. Calf raise su gradino 20 rip <br>5. Respirazione nasale camminando sul posto 2 min (recupero attivo)<br><br>Respirazione nasale per tutto il circuito: se vai in affanno, stai andando troppo forte. Il controllo del respiro è l'obiettivo, non la velocità."
+    },
+    "rv_B": {
+      "title": "Circuito RV — resistenza verticale B · ~30 min",
+      "body": "<strong>Metodo Resistenza Verticale — Circuito B · 3 giri · recupero 55s</strong><br><br>1. Bulgarian split squat 10/lato <br>2. Hip hinge con manubri 12 rip <br>3. Step-up con zaino 3-5 kg 10/lato <br>4. Glute bridge con elastico 15 rip <br>5. Plank laterale 30s/lato <br>6. Respirazione diaframmatica 90s<br><br>Il plank laterale è nuovo: stabilizza il core laterale fondamentale per terreno irregolare con zaino."
+    },
+    "rv_C": {
+      "title": "Circuito RV avanzato · ~35 min",
+      "body": "<strong>Metodo Resistenza Verticale — Circuito avanzato · 4 giri · recupero 45s</strong><br><br>1. Step-up con zaino 8-10 kg 10/lato <br>2. Bulgarian split squat con manubri 10/lato <br>3. Hip hinge con manubri 12 rip <br>4. Single-leg calf raise 12/lato <br>5. Wall sit 40s <br>6. RDL monogamba 10/lato <br>7. Respirazione nasale camminando 90s<br><br>Questo circuito replica la catena di fatica di una giornata in montagna: gambe, postura, respiro in sequenza."
+    },
+    "c_tech": {
+      "title": "Arrampicata — sessione tecnica · ~75 min",
+      "body": "<strong>~75 min · focus tecnico.</strong> Riscaldamento 15 min su vie facili. Boulder 4b–5c o vie indoor moderate: focus movimenti puliti, uso dei piedi, opposizione. Niente projecting pesante. Termina con 10 min stretching spalle, avambracci, anca."
+    },
+    "c_mod": {
+      "title": "Arrampicata — sessione moderata · ~90 min",
+      "body": "<strong>~90 min · tecnica + qualche sfida.</strong> Riscaldamento. Traversi e boulder tecnici 5b–6a. Prova 1-2 sequenze leggermente oltre il tuo limite attuale. Termina con stretching completo. Niente potenza esplosiva: le gambe lavorano già abbastanza."
+    },
+    "c_power": {
+      "title": "Arrampicata — sessione di sviluppo · ~90 min",
+      "body": "<strong>~90 min · sviluppo forza e resistenza su roccia.</strong> Riscaldamento 20 min. Boulder 5c–6b: lavora su sequenze potenti ma brevi (4-6 mosse). Poi volume su vie moderate per resistenza. Termina con 10 min stretching mirato avambracci (apertura dita, flessione polso) + spalle."
+    },
+    "c_maint": {
+      "title": "Arrampicata — mantenimento · ~60 min",
+      "body": "<strong>~60 min · solo mantenimento.</strong> Settimana di picco o scarico: vie 4b–5b, boulder facile. Obiettivo: tenere vivo il gesto, non accumulare fatica. Se le gambe sono pesanti, concentrati su vie che usano molto le braccia."
+    },
+    "mont_media": {
+      "title": "Uscita in montagna — media · sabato",
+      "body": "<strong>Uscita media: 4-5h, 800-1200m D+.</strong> Conta come allenamento completo. Zaino 8-10 kg. Respirazione nasale in salita come unico regolatore del ritmo. Bastoncini consigliati. Il giorno dopo: riposo obbligatorio, mobilità leggera se vuoi. Togli la sessione di forza del lunedì successivo."
+    },
+    "mont_impegn": {
+      "title": "Uscita in montagna — impegnativa · sabato",
+      "body": "<strong>Uscita impegnativa: 6-8h, 1200-1800m D+.</strong> È lo stimolo più alto della settimana, punto. Zaino 10-12 kg. Bastoncini. Scala tutto nella settimana: la corsa della settimana diventa una camminata, la forza si riduce a 2 giri soli. Il lunedì successivo: solo mobilità."
+    }
+  },
+  "weeks": [
+    {
+      "piano": "maggiu2026",
+      "label": "Sett. 1  27 apr–3 mag",
+      "note": "Fase 1 — Recupero post-gara e riattivazione. Niente intensità: le gambe hanno ancora la 10km. Corsa leggera, forza solo a corpo libero, arrampicata tecnica. 2 giorni di riposo.",
+      "cols": 7,
+      "days": [
+        {
+          "date": "Lun 27/4",
+          "isoDate": "2026-04-27",
+          "badges": [
+            {
+              "cls": "b-mob",
+              "txt": "Mobilità recupero",
+              "key": "mob_A"
+            }
+          ]
+        },
+        {
+          "date": "Mar 28/4",
+          "isoDate": "2026-04-28",
+          "badges": [
+            {
+              "cls": "b-forza",
+              "txt": "Forza gambe A",
+              "key": "fa_M1_1"
+            }
+          ]
+        },
+        {
+          "date": "Mer 29/4",
+          "isoDate": "2026-04-29",
+          "badges": [],
+          "rest": true
+        },
+        {
+          "date": "Gio 30/4",
+          "isoDate": "2026-04-30",
+          "badges": [
+            {
+              "cls": "b-forza",
+              "txt": "Forza gambe B",
+              "key": "fb_M1_1"
+            }
+          ]
+        },
+        {
+          "date": "Ven 1/5",
+          "isoDate": "2026-05-01",
+          "badges": [
+            {
+              "cls": "b-climb",
+              "txt": "Arrampicata tecnica",
+              "key": "c_tech"
+            }
+          ]
+        },
+        {
+          "date": "Sab 2/5",
+          "isoDate": "2026-05-02",
+          "badges": [
+            {
+              "cls": "b-run",
+              "txt": "Corsa easy 30 min",
+              "key": "r_easy_30"
+            }
+          ]
+        },
+        {
+          "date": "Dom 3/5",
+          "isoDate": "2026-05-03",
+          "badges": [],
+          "rest": true
+        }
+      ]
+    },
+    {
+      "piano": "maggiu2026",
+      "label": "Sett. 2  4–10 mag",
+      "note": "Fase 1 — Costruzione. Primo carico esterno nella forza. Circuito RV A introdotto. Arrampicata moderata. Corsa aumenta a 35 min.",
+      "cols": 7,
+      "days": [
+        {
+          "date": "Lun 4/5",
+          "isoDate": "2026-05-04",
+          "badges": [
+            {
+              "cls": "b-mob",
+              "txt": "Mobilità B",
+              "key": "mob_B"
+            }
+          ]
+        },
+        {
+          "date": "Mar 5/5",
+          "isoDate": "2026-05-05",
+          "badges": [
+            {
+              "cls": "b-forza",
+              "txt": "Forza gambe A",
+              "key": "fa_M1_2"
+            }
+          ]
+        },
+        {
+          "date": "Mer 6/5",
+          "isoDate": "2026-05-06",
+          "badges": [
+            {
+              "cls": "b-run",
+              "txt": "Corsa easy 35 min",
+              "key": "r_easy_35"
+            }
+          ]
+        },
+        {
+          "date": "Gio 7/5",
+          "isoDate": "2026-05-07",
+          "badges": [
+            {
+              "cls": "b-forza",
+              "txt": "Forza gambe B",
+              "key": "fb_M1_2"
+            }
+          ]
+        },
+        {
+          "date": "Ven 8/5",
+          "isoDate": "2026-05-08",
+          "badges": [
+            {
+              "cls": "b-climb",
+              "txt": "Arrampicata moderata",
+              "key": "c_mod"
+            }
+          ]
+        },
+        {
+          "date": "Sab 9/5",
+          "isoDate": "2026-05-09",
+          "badges": [
+            {
+              "cls": "b-forza",
+              "txt": "Circuito RV — A",
+              "key": "rv_A"
+            }
+          ]
+        },
+        {
+          "date": "Dom 10/5",
+          "isoDate": "2026-05-10",
+          "badges": [],
+          "rest": true
+        }
+      ]
+    },
+    {
+      "piano": "maggiu2026",
+      "label": "Sett. 3  11–17 mag",
+      "note": "Fase 1 — Consolidamento. Carico +10%, recupero scende a 50s. Circuito RV B. Prima corsa trail/fartlek collinare. Mobilità C con respirazione RV.",
+      "cols": 7,
+      "days": [
+        {
+          "date": "Lun 11/5",
+          "isoDate": "2026-05-11",
+          "badges": [
+            {
+              "cls": "b-mob",
+              "txt": "Mobilità C + RV",
+              "key": "mob_C"
+            }
+          ]
+        },
+        {
+          "date": "Mar 12/5",
+          "isoDate": "2026-05-12",
+          "badges": [
+            {
+              "cls": "b-forza",
+              "txt": "Forza gambe A",
+              "key": "fa_M1_3"
+            }
+          ]
+        },
+        {
+          "date": "Mer 13/5",
+          "isoDate": "2026-05-13",
+          "badges": [
+            {
+              "cls": "b-run",
+              "txt": "Trail/fartlek 40 min",
+              "key": "r_trail_40"
+            }
+          ]
+        },
+        {
+          "date": "Gio 14/5",
+          "isoDate": "2026-05-14",
+          "badges": [
+            {
+              "cls": "b-forza",
+              "txt": "Forza gambe B",
+              "key": "fb_M1_3"
+            }
+          ]
+        },
+        {
+          "date": "Ven 15/5",
+          "isoDate": "2026-05-15",
+          "badges": [
+            {
+              "cls": "b-climb",
+              "txt": "Arrampicata tecnica",
+              "key": "c_tech"
+            }
+          ]
+        },
+        {
+          "date": "Sab 16/5",
+          "isoDate": "2026-05-16",
+          "badges": [
+            {
+              "cls": "b-forza",
+              "txt": "Circuito RV — B",
+              "key": "rv_B"
+            }
+          ]
+        },
+        {
+          "date": "Dom 17/5",
+          "isoDate": "2026-05-17",
+          "badges": [],
+          "rest": true
+        }
+      ]
+    },
+    {
+      "piano": "maggiu2026",
+      "label": "Sett. 4  18–24 mag",
+      "note": "Fase 2 — Sviluppo. +1 giro (4 giri totali). Zaino leggero (3-5 kg) nello step-up. Arrampicata di sviluppo. Corsa trail 45 min. Introduce il Circuito RV avanzato.",
+      "cols": 7,
+      "days": [
+        {
+          "date": "Lun 18/5",
+          "isoDate": "2026-05-18",
+          "badges": [
+            {
+              "cls": "b-mob",
+              "txt": "Mobilità B",
+              "key": "mob_B"
+            }
+          ]
+        },
+        {
+          "date": "Mar 19/5",
+          "isoDate": "2026-05-19",
+          "badges": [
+            {
+              "cls": "b-forza",
+              "txt": "Forza gambe A",
+              "key": "fa_M2_1"
+            }
+          ]
+        },
+        {
+          "date": "Mer 20/5",
+          "isoDate": "2026-05-20",
+          "badges": [
+            {
+              "cls": "b-run",
+              "txt": "Trail collinare 45 min",
+              "key": "r_trail_45"
+            }
+          ]
+        },
+        {
+          "date": "Gio 21/5",
+          "isoDate": "2026-05-21",
+          "badges": [
+            {
+              "cls": "b-forza",
+              "txt": "Forza gambe B",
+              "key": "fb_M2_1"
+            }
+          ]
+        },
+        {
+          "date": "Ven 22/5",
+          "isoDate": "2026-05-22",
+          "badges": [
+            {
+              "cls": "b-climb",
+              "txt": "Arrampicata sviluppo",
+              "key": "c_power"
+            }
+          ]
+        },
+        {
+          "date": "Sab 23/5",
+          "isoDate": "2026-05-23",
+          "badges": [
+            {
+              "cls": "b-forza",
+              "txt": "Circuito RV avanzato",
+              "key": "rv_C"
+            }
+          ]
+        },
+        {
+          "date": "Dom 24/5",
+          "isoDate": "2026-05-24",
+          "badges": [],
+          "rest": true
+        }
+      ]
+    },
+    {
+      "piano": "maggiu2026",
+      "label": "Sett. 5  25–31 mag",
+      "note": "Fase 2 — Volume. Zaino 5-7 kg. Recupero scende a 45s. Uscita in montagna sabato (opzionale): se ci vai, togli il circuito RV e riduci la forza del giovedì a 2 giri.",
+      "cols": 7,
+      "days": [
+        {
+          "date": "Lun 25/5",
+          "isoDate": "2026-05-25",
+          "badges": [
+            {
+              "cls": "b-mob",
+              "txt": "Mobilità C + RV",
+              "key": "mob_C"
+            }
+          ]
+        },
+        {
+          "date": "Mar 26/5",
+          "isoDate": "2026-05-26",
+          "badges": [
+            {
+              "cls": "b-forza",
+              "txt": "Forza gambe A",
+              "key": "fa_M2_2"
+            }
+          ]
+        },
+        {
+          "date": "Mer 27/5",
+          "isoDate": "2026-05-27",
+          "badges": [
+            {
+              "cls": "b-run",
+              "txt": "Uscita lunga 50 min",
+              "key": "r_long_50"
+            }
+          ]
+        },
+        {
+          "date": "Gio 28/5",
+          "isoDate": "2026-05-28",
+          "badges": [
+            {
+              "cls": "b-forza",
+              "txt": "Forza gambe B",
+              "key": "fb_M2_2"
+            }
+          ]
+        },
+        {
+          "date": "Ven 29/5",
+          "isoDate": "2026-05-29",
+          "badges": [
+            {
+              "cls": "b-climb",
+              "txt": "Arrampicata moderata",
+              "key": "c_mod"
+            }
+          ]
+        },
+        {
+          "date": "Sab 30/5",
+          "isoDate": "2026-05-30",
+          "alt": true,
+          "badges": [
+            {
+              "cls": "b-opt",
+              "txt": "Montagna opt. / RV avanzato",
+              "key": "mont_media"
+            }
+          ]
+        },
+        {
+          "date": "Dom 31/5",
+          "isoDate": "2026-05-31",
+          "badges": [],
+          "rest": true
+        }
+      ]
+    },
+    {
+      "piano": "maggiu2026",
+      "label": "Sett. 6  1–7 giu",
+      "note": "⚡ Fase 2 Picco — Zaino 8-10 kg nello step-up. Wall sit 50s. Arrampicata di sviluppo. Uscita lunga 55 min. Settimana più densa della Fase 2.",
+      "cols": 7,
+      "days": [
+        {
+          "date": "Lun 1/6",
+          "isoDate": "2026-06-01",
+          "badges": [
+            {
+              "cls": "b-mob",
+              "txt": "Mobilità B",
+              "key": "mob_B"
+            }
+          ]
+        },
+        {
+          "date": "Mar 2/6",
+          "isoDate": "2026-06-02",
+          "badges": [
+            {
+              "cls": "b-forza",
+              "txt": "Forza gambe A",
+              "key": "fa_M2_3"
+            }
+          ]
+        },
+        {
+          "date": "Mer 3/6",
+          "isoDate": "2026-06-03",
+          "badges": [
+            {
+              "cls": "b-run",
+              "txt": "Trail collinare 55 min",
+              "key": "r_long_55"
+            }
+          ]
+        },
+        {
+          "date": "Gio 4/6",
+          "isoDate": "2026-06-04",
+          "badges": [
+            {
+              "cls": "b-forza",
+              "txt": "Forza gambe B",
+              "key": "fb_M2_3"
+            }
+          ]
+        },
+        {
+          "date": "Ven 5/6",
+          "isoDate": "2026-06-05",
+          "badges": [
+            {
+              "cls": "b-climb",
+              "txt": "Arrampicata sviluppo",
+              "key": "c_power"
+            }
+          ]
+        },
+        {
+          "date": "Sab 6/6",
+          "isoDate": "2026-06-06",
+          "badges": [
+            {
+              "cls": "b-forza",
+              "txt": "Circuito RV avanzato",
+              "key": "rv_C"
+            }
+          ]
+        },
+        {
+          "date": "Dom 7/6",
+          "isoDate": "2026-06-07",
+          "badges": [],
+          "rest": true
+        }
+      ]
+    },
+    {
+      "piano": "maggiu2026",
+      "label": "Sett. 7  8–14 giu",
+      "note": "⚡ PICCO MASSIMO — Fase 3. Massimo stimolo dell'intero piano: 4-5 giri, zaino 10 kg, recupero 40s. Ascolta il corpo: se giovedì sei distrutto, riduci la forza B a 3 giri.",
+      "cols": 7,
+      "days": [
+        {
+          "date": "Lun 8/6",
+          "isoDate": "2026-06-08",
+          "badges": [
+            {
+              "cls": "b-mob",
+              "txt": "Mobilità C + RV",
+              "key": "mob_C"
+            }
+          ]
+        },
+        {
+          "date": "Mar 9/6",
+          "isoDate": "2026-06-09",
+          "badges": [
+            {
+              "cls": "b-forza",
+              "txt": "Forza gambe A — PICCO",
+              "key": "fa_M3_1"
+            }
+          ]
+        },
+        {
+          "date": "Mer 10/6",
+          "isoDate": "2026-06-10",
+          "badges": [
+            {
+              "cls": "b-run",
+              "txt": "Trail collinare 55 min",
+              "key": "r_long_55"
+            }
+          ]
+        },
+        {
+          "date": "Gio 11/6",
+          "isoDate": "2026-06-11",
+          "badges": [
+            {
+              "cls": "b-forza",
+              "txt": "Forza gambe B — PICCO",
+              "key": "fb_M3_1"
+            }
+          ]
+        },
+        {
+          "date": "Ven 12/6",
+          "isoDate": "2026-06-12",
+          "badges": [
+            {
+              "cls": "b-climb",
+              "txt": "Arrampicata moderata",
+              "key": "c_maint"
+            }
+          ]
+        },
+        {
+          "date": "Sab 13/6",
+          "isoDate": "2026-06-13",
+          "alt": true,
+          "badges": [
+            {
+              "cls": "b-opt",
+              "txt": "Montagna opt. / RV avanzato",
+              "key": "mont_impegn"
+            }
+          ]
+        },
+        {
+          "date": "Dom 14/6",
+          "isoDate": "2026-06-14",
+          "badges": [],
+          "rest": true
+        }
+      ]
+    },
+    {
+      "piano": "maggiu2026",
+      "label": "Sett. 8  15–21 giu",
+      "note": "Fase 3 — Scarico. -30% volume, carichi invariati. Il corpo consolida gli adattamenti del picco. Non aggiungere nulla 'per sicurezza'. Mobilità pre-montagna sabato sera.",
+      "cols": 7,
+      "days": [
+        {
+          "date": "Lun 15/6",
+          "isoDate": "2026-06-15",
+          "badges": [
+            {
+              "cls": "b-mob",
+              "txt": "Mobilità A",
+              "key": "mob_A"
+            }
+          ]
+        },
+        {
+          "date": "Mar 16/6",
+          "isoDate": "2026-06-16",
+          "badges": [
+            {
+              "cls": "b-forza",
+              "txt": "Forza gambe A — scarico",
+              "key": "fa_M3_2"
+            }
+          ]
+        },
+        {
+          "date": "Mer 17/6",
+          "isoDate": "2026-06-17",
+          "badges": [
+            {
+              "cls": "b-run",
+              "txt": "Corsa easy 30 min",
+              "key": "r_easy_30"
+            }
+          ]
+        },
+        {
+          "date": "Gio 18/6",
+          "isoDate": "2026-06-18",
+          "badges": [
+            {
+              "cls": "b-forza",
+              "txt": "Forza gambe B — scarico",
+              "key": "fb_M3_2"
+            }
+          ]
+        },
+        {
+          "date": "Ven 19/6",
+          "isoDate": "2026-06-19",
+          "badges": [
+            {
+              "cls": "b-climb",
+              "txt": "Arrampicata mantenimento",
+              "key": "c_maint"
+            }
+          ]
+        },
+        {
+          "date": "Sab 20/6",
+          "isoDate": "2026-06-20",
+          "badges": [
+            {
+              "cls": "b-mob",
+              "txt": "Mobilità pre-montagna",
+              "key": "mob_pre_mont"
+            }
+          ]
+        },
+        {
+          "date": "Dom 21/6",
+          "isoDate": "2026-06-21",
+          "badges": [],
+          "rest": true
+        }
+      ]
+    },
+    {
+      "piano": "maggiu2026",
+      "label": "Sett. 9  22–28 giu",
+      "note": "Mantenimento fine piano. Volume moderato, qualità alta. Pronti per la stagione estiva in montagna. Uscita impegnativa sabato se le condizioni lo permettono.",
+      "cols": 7,
+      "days": [
+        {
+          "date": "Lun 22/6",
+          "isoDate": "2026-06-22",
+          "badges": [
+            {
+              "cls": "b-mob",
+              "txt": "Mobilità B",
+              "key": "mob_B"
+            }
+          ]
+        },
+        {
+          "date": "Mar 23/6",
+          "isoDate": "2026-06-23",
+          "badges": [
+            {
+              "cls": "b-forza",
+              "txt": "Forza gambe A",
+              "key": "fa_M3_3"
+            }
+          ]
+        },
+        {
+          "date": "Mer 24/6",
+          "isoDate": "2026-06-24",
+          "badges": [
+            {
+              "cls": "b-run",
+              "txt": "Trail collinare 45 min",
+              "key": "r_trail_45"
+            }
+          ]
+        },
+        {
+          "date": "Gio 25/6",
+          "isoDate": "2026-06-25",
+          "badges": [
+            {
+              "cls": "b-forza",
+              "txt": "Forza gambe B",
+              "key": "fb_M3_3"
+            }
+          ]
+        },
+        {
+          "date": "Ven 26/6",
+          "isoDate": "2026-06-26",
+          "badges": [
+            {
+              "cls": "b-climb",
+              "txt": "Arrampicata sviluppo",
+              "key": "c_power"
+            }
+          ]
+        },
+        {
+          "date": "Sab 27/6",
+          "isoDate": "2026-06-27",
+          "alt": true,
+          "badges": [
+            {
+              "cls": "b-opt",
+              "txt": "Montagna impegn. / RV avanzato",
+              "key": "mont_impegn"
+            }
+          ]
+        },
+        {
+          "date": "Dom 28/6",
+          "isoDate": "2026-06-28",
+          "badges": [],
+          "rest": true
+        }
+      ]
+    }
+  ]
+}
