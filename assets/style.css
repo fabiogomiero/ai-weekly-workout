@@ -129,48 +129,6 @@ h1 em {
 .section { display: none; }
 .section.active { display: block; }
 
-/* ── PROGRESS BAR ── */
-.prog-wrap {
-  background: var(--bg2);
-  border: 1px solid var(--line);
-  border-radius: var(--radius-lg);
-  padding: 16px 20px;
-  margin-bottom: 24px;
-}
-.prog-label {
-  font-family: var(--mono);
-  font-size: .72rem;
-  color: var(--txt3);
-  letter-spacing: .05em;
-  text-transform: uppercase;
-  margin-bottom: 12px;
-}
-.prog-rows { display: flex; flex-direction: column; gap: 6px; }
-.prog-row { display: flex; align-items: center; gap: 8px; }
-.prog-row-lbl {
-  font-family: var(--mono);
-  font-size: .72rem;
-  color: var(--txt3);
-  width: 36px;
-  flex-shrink: 0;
-}
-.prog-segs { display: flex; gap: 3px; flex: 1; }
-.prog-seg {
-  height: 8px;
-  flex: 1;
-  border-radius: 3px;
-  background: var(--line);
-  transition: background .3s;
-}
-.seg-done  { background: var(--done); }
-.seg-mont  { background: #3a6060; }
-.seg-curr  { background: #8a6020; }
-.seg-s1    { background: #1a5a40; }
-.seg-s2    { background: #2a3a6a; }
-.seg-s3    { background: #1a4a5a; }
-.seg-gara  { background: #6a4010; }
-.seg-empty { background: transparent !important; }
-
 /* ── WEEK TABS ── */
 .week-tabs {
   display: flex;
