@@ -7,8 +7,9 @@ const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_
 // Map: "YYYY-MM-DD:workout_key" → { status, reason }
 let workoutLogCache = {};
 
-// PIANI, DETAILS, WEEKS vengono caricati da data/plan_apr2026.json all'avvio
+// PIANI caricato da data/plans.json; DETAILS e WEEKS mergiati piano per piano
 let PIANI = [], DETAILS = {}, WEEKS = [];
+const LOADED_PLANS = new Set();
 let EX_CATS = [];
 let ESERCIZI = {};
 
@@ -34,16 +35,6 @@ let currentExCat = 'forza';
 
 /** Restituisce 'YYYY-MM-DD' nella timezone locale del browser */
 const getTodayStr = () => new Date().toLocaleDateString('sv-SE');
-
-/* ── Countdown ── */
-function updateCountdown() {
-  const gara = new Date('2026-04-26');
-  const today = new Date();
-  today.setHours(0,0,0,0);
-  const diff = Math.ceil((gara - today) / 86400000);
-  const el = document.getElementById('days-to-go');
-  if (el) el.textContent = diff > 0 ? `${diff} giorni alla gara` : diff === 0 ? 'Oggi è il giorno!' : 'Gara completata';
-}
 
 /* ── Section switcher ── */
 function showSection(id) {
@@ -191,7 +182,26 @@ function renderStorico() {
   `).join('');
 }
 
-function selectPiano(id) {
+async function selectPiano(id) {
+  if (!LOADED_PLANS.has(id)) {
+    const pianoDef = PIANI.find(p => p.id === id);
+    if (!pianoDef) return;
+    document.getElementById('cal-grid').innerHTML = '<p style="padding:20px">Caricamento...</p>';
+    try {
+      const res = await fetch(`./data/${pianoDef.file}`);
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const plan = await res.json();
+      Object.assign(DETAILS, plan.details);
+      WEEKS.push(...plan.weeks);
+      LOADED_PLANS.add(id);
+    } catch (e) {
+      const prevPiano = currentPiano;
+      document.getElementById('cal-grid').innerHTML =
+        `<p style="color:red;padding:20px">Errore caricamento piano: ${e.message}</p>` +
+        `<p style="padding:0 20px"><button onclick="selectPiano('${prevPiano}');showSection('calendario')">← Torna al piano corrente</button></p>`;
+      return;
+    }
+  }
   currentPiano = id;
   currentWeekIdx = 0;
   renderWeekTabs();
@@ -296,12 +306,21 @@ async function saveNote(dateStr, workoutKey, btn) {
 /* ── INIT ── */
 async function initApp() {
   try {
-    const res = await fetch('./data/plan_apr2026.json');
-    const plan = await res.json();
-    PIANI = plan.piani;
-    DETAILS = plan.details;
-    WEEKS = plan.weeks;
-    currentPiano = PIANI.find(p => p.current)?.id || PIANI[0]?.id;
+    const manifestRes = await fetch('./data/plans.json');
+    if (!manifestRes.ok) throw new Error(`Manifest HTTP ${manifestRes.status}`);
+    PIANI = await manifestRes.json();
+
+    const currentDef = PIANI.find(p => p.current) || PIANI[0];
+    const planRes = await fetch(`./data/${currentDef.file}`);
+    if (!planRes.ok) throw new Error(`Piano HTTP ${planRes.status}`);
+    const plan = await planRes.json();
+    Object.assign(DETAILS, plan.details);
+    WEEKS.push(...plan.weeks);
+    LOADED_PLANS.add(currentDef.id);
+    currentPiano = currentDef.id;
+
+    const obiettivoEl = document.getElementById('obiettivo');
+    if (obiettivoEl) obiettivoEl.textContent = currentDef.gara;
   } catch (e) {
     console.error('Errore caricamento piano:', e);
     document.getElementById('cal-grid').innerHTML = '<p style="color:red;padding:20px">Errore caricamento piano. Apri da un server locale (non direttamente dal filesystem).</p>';
@@ -340,9 +359,7 @@ async function initApp() {
     });
   } catch (e) {
     console.warn('Esercizi non caricati da Supabase:', e.message);
-    // EX_CATS e ESERCIZI restano vuoti: il tab esercizi non mostra nulla ma l'app non crasha
   }
-  updateCountdown();
 
   // Auto-select la settimana che contiene oggi
   const todayStr = getTodayStr();

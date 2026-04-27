@@ -1,6 +1,7 @@
 import os
 from pathlib import Path
 from dotenv import load_dotenv
+import json
 
 # Carica .env se esiste (sviluppo locale)
 load_dotenv(Path(__file__).parent / '.env')
@@ -11,7 +12,14 @@ SUPABASE_URL = os.environ['SUPABASE_URL']
 SUPABASE_KEY = os.environ['SUPABASE_KEY']  # service role key
 ANTHROPIC_API_KEY = os.environ['ANTHROPIC_API_KEY']
 
-# Costanti piano
-RACE_DATE_STR = '2026-04-26'
-PLAN_JSON_PATH = Path(__file__).parent.parent / 'data' / 'plan_apr2026.json'
+# Piano corrente ricavato dal manifest
+_manifest_path = Path(__file__).parent.parent / 'data' / 'plans.json'
+_manifest = json.loads(_manifest_path.read_text(encoding='utf-8'))
+_current = next((p for p in _manifest if p['current']), None)
+if _current is None:
+    raise RuntimeError('data/plans.json: nessun piano con "current": true')
+
+PLAN_JSON_PATH = Path(__file__).parent.parent / 'data' / _current['file']
+PLAN_GARA = _current['gara']
+
 PAGE_URL = 'https://fabiogomiero.github.io/ai-weekly-workout/'

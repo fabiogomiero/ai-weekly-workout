@@ -1,0 +1,18 @@
+[
+  {
+    "id": "apr2026",
+    "label": "Piano Aprile 2026",
+    "meta": "23 mar → 26 apr 2026",
+    "gara": "10 km — 26 Aprile 2026",
+    "current": false,
+    "file": "plan_apr2026.json"
+  },
+  {
+    "id": "maggiu2026",
+    "label": "Piano Maggio–Giugno 2026",
+    "meta": "27 apr → 28 giu 2026",
+    "gara": "Alta Montagna Estate 2026",
+    "current": true,
+    "file": "plan_magglu2026.json"
+  }
+]
