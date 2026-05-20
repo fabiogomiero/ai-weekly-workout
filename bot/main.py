@@ -1,5 +1,6 @@
 import json
 import logging
+import os
 import re
 from datetime import date, datetime, time, timedelta
 from zoneinfo import ZoneInfo
@@ -12,7 +13,7 @@ from telegram.ext import (
 
 from config import (
     TELEGRAM_TOKEN, CHAT_ID, SUPABASE_URL, SUPABASE_KEY,
-    ANTHROPIC_API_KEY, PLAN_JSON_PATH, PLAN_GARA, PAGE_URL
+    ANTHROPIC_API_KEY, PLAN_JSON_PATH, PLAN_GARA, PAGE_URL, WEBHOOK_URL
 )
 from schedule_logic import get_workouts_for_date, is_rest_day, get_week_context, load_plan
 from claude_adapter import propose_adaptation
@@ -402,7 +403,13 @@ def main():
     job_queue.run_daily(morning_check, time=time(7, 0, tzinfo=ROME))
 
     logger.info("Bot avviato. Check serale: 22:00 CET/CEST, Check mattutino: 07:00 CET/CEST")
-    app.run_polling(allowed_updates=Update.ALL_TYPES)
+    app.run_webhook(
+        listen="0.0.0.0",
+        port=int(os.environ.get("PORT", 8080)),
+        url_path=TELEGRAM_TOKEN,
+        webhook_url=f"{WEBHOOK_URL}/{TELEGRAM_TOKEN}",
+        allowed_updates=Update.ALL_TYPES,
+    )
 
 
 if __name__ == '__main__':

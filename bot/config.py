@@ -11,6 +11,7 @@ CHAT_ID = int(os.environ['CHAT_ID'])
 SUPABASE_URL = os.environ['SUPABASE_URL']
 SUPABASE_KEY = os.environ['SUPABASE_KEY']  # service role key
 ANTHROPIC_API_KEY = os.environ['ANTHROPIC_API_KEY']
+WEBHOOK_URL = os.environ['WEBHOOK_URL']
 
 # Piano corrente ricavato dal manifest
 _manifest_path = Path(__file__).parent.parent / 'data' / 'plans.json'
