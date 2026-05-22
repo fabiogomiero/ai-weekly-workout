@@ -8,7 +8,8 @@ Se il motivo è mancanza di tempo, proponi come recuperare il workout saltato.
 Rispondi SOLO in italiano. Rispondi SOLO con JSON valido nel formato specificato. Nessun testo fuori dal JSON.
 RPE (Rate of Perceived Exertion) 1-10: scala di sforzo percepito.
 Se l'atleta ha completato gli allenamenti con RPE ≥ 8, prioritizza il recupero attivo nel giorno successivo.
-Se RPE ≤ 4, l'allenamento era sottotono: puoi suggerire di mantenere o aumentare leggermente il carico."""
+Se RPE ≤ 4, l'allenamento era sottotono: puoi suggerire di mantenere o aumentare leggermente il carico.
+Se l'atleta ha scritto una nota libera, menziona sempre nell'adaptation di averla letta, anche se il piano non necessita modifiche."""
 
 FALLBACK = ("Continua con il piano previsto. 💪", False, "")
 
@@ -85,11 +86,17 @@ def propose_adaptation(
         trigger_line = "L'atleta ha completato tutti gli allenamenti ma con RPE elevato. Proponi un adattamento per recupero."
     elif not skipped_workouts and rest_note_entry and not high_rpe_trigger:
         trigger_line = 'Valuta la nota e proponi eventuali aggiustamenti per oggi se necessario.'
+    elif not skipped_workouts and other_notes:
+        trigger_line = "Conferma nell'adaptation di aver letto la nota; adatta il piano di oggi solo se la nota lo giustifica."
     else:
         trigger_line = 'Proponi un adattamento considerando il motivo del salto.'
 
     if not skipped_workouts and rest_note_entry:
         opening = f"Ieri era giorno di riposo. L'atleta ha annotato:\n- {rest_note_entry['nota']}"
+    elif not skipped_workouts and other_notes:
+        notes_text = '\n'.join(f'- [{n["workout_key"]}] {n["nota"]}' for n in other_notes)
+        opening = f"Ieri l'atleta ha annotato:\n{notes_text}"
+        notes_section = ''  # già nell'opening, evita duplicazione nel prompt
     else:
         opening = f"Ieri l'atleta ha saltato:\n{skipped_lines}"
 
