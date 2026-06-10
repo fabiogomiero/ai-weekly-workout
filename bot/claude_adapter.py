@@ -25,6 +25,8 @@ def _reason_text(w: dict) -> str:
 
 
 def _parse_claude_response(raw: str) -> tuple[str, bool, str]:
+    # Rimuovi eventuali markdown code fences (```json ... ```)
+    raw = re.sub(r'```(?:json)?\s*', '', raw).strip()
     # Estrai il JSON anche se Claude antepone/appende testo
     match = re.search(r'\{.*\}', raw, re.DOTALL)
     if match:
@@ -129,7 +131,7 @@ Formato risposta JSON esatto:
         client = anthropic.Anthropic(api_key=api_key)
         response = client.messages.create(
             model='claude-haiku-4-5-20251001',  # haiku: veloce ed economico per questo uso
-            max_tokens=300,
+            max_tokens=500,
             system=SYSTEM_PROMPT,
             messages=[{'role': 'user', 'content': user_prompt}],
         )
