@@ -96,7 +96,15 @@ def propose_adaptation(
         trigger_line = "Considera quello che l'atleta ha scritto e rispondi in modo personale; adatta il piano di oggi solo se necessario."
     elif skipped_workouts:
         opening = f"Ieri l'atleta ha saltato:\n{skipped_lines}"
-        trigger_line = 'Proponi un adattamento considerando il motivo del salto e quello che l\'atleta ha scritto.'
+        has_skipped_notes = any(
+            w.get('workout_key') and w['workout_key'] in notes_map
+            for w in skipped_workouts
+        )
+        trigger_line = (
+            "Proponi un adattamento considerando il motivo del salto e quello che l'atleta ha scritto."
+            if has_skipped_notes
+            else 'Proponi un adattamento considerando il motivo del salto.'
+        )
     else:
         return FALLBACK
 
