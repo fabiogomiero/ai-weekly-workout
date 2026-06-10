@@ -1,6 +1,10 @@
 # bot/claude_adapter.py
 import json
+import logging
+import re
 import anthropic
+
+logger = logging.getLogger(__name__)
 
 SYSTEM_PROMPT = """Sei un coach di corsa e forza specializzato.
 Se il motivo è stanchezza fisica, proponi riposo attivo o riduzione del volume.
@@ -21,18 +25,18 @@ def _reason_text(w: dict) -> str:
 
 
 def _parse_claude_response(raw: str) -> tuple[str, bool, str]:
-    """
-    Parsa la risposta JSON di Claude.
-    Se invalida o mancante di campi → restituisce FALLBACK.
-    """
+    # Estrai il JSON anche se Claude antepone/appende testo
+    match = re.search(r'\{.*\}', raw, re.DOTALL)
+    if match:
+        raw = match.group()
     try:
         data = json.loads(raw)
         adaptation = str(data['adaptation'])
         today_modified = bool(data['today_modified'])
-        # today_override solo se today_modified=True
         today_override = str(data.get('today_override', '')) if today_modified else ''
         return adaptation, today_modified, today_override
     except (json.JSONDecodeError, KeyError, TypeError):
+        logger.warning("Claude response non parsabile: %s", raw[:200])
         return FALLBACK
 
 
@@ -120,6 +124,7 @@ Allenamento previsto oggi:
 Formato risposta JSON esatto:
 {{"adaptation": "...", "today_modified": false, "today_override": ""}}"""
 
+    logger.debug("Claude user_prompt:\n%s", user_prompt)
     try:
         client = anthropic.Anthropic(api_key=api_key)
         response = client.messages.create(
