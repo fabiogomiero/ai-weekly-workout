@@ -98,8 +98,7 @@ def propose_adaptation(
         opening = f"Ieri l'atleta ha saltato:\n{skipped_lines}"
         trigger_line = 'Proponi un adattamento considerando il motivo del salto e quello che l\'atleta ha scritto.'
     else:
-        opening = f"Ieri l'atleta ha saltato:\n{skipped_lines}"
-        trigger_line = 'Proponi un adattamento considerando il motivo del salto.'
+        return FALLBACK
 
     user_prompt = f"""{opening}
 {done_section}{notes_section}
