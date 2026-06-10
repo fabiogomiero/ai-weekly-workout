@@ -271,8 +271,7 @@ async def morning_check(context: ContextTypes.DEFAULT_TYPE):
 
         if skipped_with_detail:
             skipped_names = ', '.join(s['descrizione'] for s in skipped_with_detail)
-            reasons = ', '.join('stanchezza' if s['reason'] == 'tired' else 'mancanza di tempo' for s in skipped_with_detail)
-            context_line = f"⚠️ Ieri hai saltato: _{skipped_names}_ ({reasons})\n"
+            context_line = f"⚠️ Ieri hai saltato: _{skipped_names}_\n"
         else:
             rpe_summary = ', '.join(f"{w['descrizione']} RPE {w['rpe']}" for w in done_with_rpe if w['rpe'] >= 8)
             context_line = f"📊 Ieri RPE alto: _{rpe_summary}_\n" if rpe_summary else "📊 Ieri carico elevato percepito.\n"
