@@ -124,7 +124,7 @@ Allenamento previsto oggi:
 Formato risposta JSON esatto:
 {{"adaptation": "...", "today_modified": false, "today_override": ""}}"""
 
-    logger.debug("Claude user_prompt:\n%s", user_prompt)
+    logger.info("Claude user_prompt:\n%s", user_prompt)
     try:
         client = anthropic.Anthropic(api_key=api_key)
         response = client.messages.create(
