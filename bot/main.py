@@ -205,6 +205,7 @@ async def morning_check(context: ContextTypes.DEFAULT_TYPE):
             detail = next((w for w in yesterday_workouts if w['key'] == s['workout_key']), None)
             if detail:
                 skipped_with_detail.append({
+                    'workout_key': s.get('workout_key', ''),
                     'tipo': detail['cls'].replace('b-', '').capitalize(),
                     'descrizione': detail['title'],
                     'reason': s.get('reason'),
@@ -235,8 +236,20 @@ async def morning_check(context: ContextTypes.DEFAULT_TYPE):
                     week_num = i + 1
                     break
 
+        noted_workouts = []
+        for r in note_rows:
+            if r.get('user_note'):
+                detail = next((w for w in yesterday_all_workouts if w['key'] == r.get('workout_key')), None)
+                if detail:
+                    noted_workouts.append({
+                        'tipo': detail['cls'].replace('b-', '').capitalize(),
+                        'descrizione': detail['title'],
+                        'nota': r['user_note'],
+                    })
+
         claude_context = {
             'skipped_workouts': skipped_with_detail,
+            'noted_workouts': noted_workouts,
             'today_workouts': [{'tipo': w['cls'].replace('b-','').capitalize(), 'descrizione': w['title']} for w in today_workouts],
             'week_number': week_num,
             'week_focus': week_ctx.get('note', ''),
